@@ -8,18 +8,22 @@ Shida is a mobile-first dating app featuring:
 - **Home/Dashboard**: User stats, weekly views chart, VIP status, tokens
 - **Discovery**: Swipe-based matching with animated cards
 - **Negotiations**: Chat interface after matches
-- **Profile**: User settings and ghost mode
+- **Profile**: User settings and dossier
+- **Market**: Token and subscription purchases
+- **Notifications**: Real-time alerts
 
 ## Tech Stack
 
 - **Backend**: Python Flask, SQLAlchemy, Flask-Login
-- **Frontend**: HTML, CSS (custom with Tailwind-inspired design), Vanilla JS
-- **Database**: SQLite (development)
+- **Frontend**: HTML, CSS (custom with animations), Vanilla JS
+- **Database**: PostgreSQL
+- **Icons**: Inline SVGs with Feather Icons CDN fallback
 
 ## Project Structure
 
 ```
-├── app.py              # Main Flask application
+├── app.py              # Flask app initialization
+├── main.py             # Entry point
 ├── models/             # Database models (User, Profile, Match, Message)
 ├── routes/             # API and view routes
 │   ├── api.py         # REST API endpoints
@@ -27,27 +31,26 @@ Shida is a mobile-first dating app featuring:
 ├── templates/          # Jinja2 HTML templates
 │   ├── auth/          # Login/Register pages
 │   ├── app/           # Main app pages
-│   └── components/    # Reusable components
+│   └── components/    # Reusable components (bottom_nav)
 ├── statics/           # Static assets
 │   ├── css/           # Stylesheets
+│   │   └── style.css  # Main styles with animations
 │   ├── js/            # JavaScript
 │   └── uploads/       # User uploads
 ├── services/          # Business logic services
 ├── security/          # Auth decorators and validators
 ├── utils/             # Helper utilities
 ├── lang/              # Translations (French/English)
-├── data/              # Static data (objectives, religions, etc.)
-├── logs/              # Application logs
+├── data/              # Static data and seeder
 └── docs/              # API documentation
 ```
 
 ## Running the App
 
+The app uses gunicorn and runs on port 5000:
 ```bash
-python app.py
+gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app
 ```
-
-The app runs on port 5000.
 
 ## Demo Account
 
@@ -56,11 +59,31 @@ The app runs on port 5000.
 
 ## Key Features
 
-1. **Swipe Cards**: Drag cards left/right or use buttons
-2. **Match Popup**: Animated celebration with confetti
+1. **Swipe Cards**: Drag cards left/right or use action buttons
+2. **Match Popup**: Animated celebration with compatibility score
 3. **Token System**: Users need tokens to initiate conversations
-4. **Ghost Mode**: VIP feature to browse anonymously
-5. **Weekly Stats**: Chart showing profile views
+4. **VIP Status**: Gold/Platinum tiers with special features
+5. **Weekly Stats**: Interactive chart showing profile views
+6. **Modern UI**: SVG icons, gradients, and smooth animations
+
+## Design System
+
+### Colors
+- Primary Pink: #ff1493
+- Primary Gold: #ffd700
+- Background Dark: #0a0a0a
+- Card Background: #1a1a1a
+- Success Green: #00ff88
+
+### Typography
+- Font: Poppins (Google Fonts)
+- Weights: 300, 400, 500, 600, 700, 800
+
+### Icons
+All icons use inline SVGs for:
+- Navigation (home, compass, message, user, settings)
+- Actions (heart, X, star, send, camera)
+- Stats (eye, trending, users, shield)
 
 ## API Endpoints
 
@@ -68,7 +91,16 @@ See `docs/API.md` for full documentation.
 
 ## User Preferences
 
-- Dark theme with pink (#ff1493) and gold (#ffd700) accents
+- Dark theme with pink and gold accents
 - French language as default
 - Mobile-first responsive design
 - Game-like animations and effects
+
+## Recent Changes
+
+- Replaced all emojis with SVG icons
+- Added Feather Icons CDN to base template
+- Redesigned home dashboard with stats cards
+- Enhanced bottom navigation with labeled icons
+- Added modern animations (fade-in, pulse, shimmer)
+- Improved VIP card with gradient effects
