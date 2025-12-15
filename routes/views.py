@@ -7,6 +7,12 @@ views = Blueprint('views', __name__)
 def index():
     if current_user.is_authenticated:
         return redirect(url_for('views.home'))
+    return redirect(url_for('views.discovery'))
+
+@views.route('/login')
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('views.home'))
     return render_template('auth/login.html')
 
 @views.route('/register')
@@ -40,9 +46,8 @@ def profile():
     return render_template('app/profile.html')
 
 @views.route('/market')
-@login_required
 def market():
-    return render_template('app/market.html')
+    return render_template('app/market.html', is_guest=not current_user.is_authenticated)
 
 @views.route('/notifications')
 @login_required

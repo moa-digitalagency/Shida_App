@@ -2029,3 +2029,360 @@ textarea.form-input {
     transform: scale(1.05);
     box-shadow: 0 5px 20px rgba(255, 20, 147, 0.4);
 }
+
+/* Notification Icon Styles */
+.notif-icon-wrapper {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notif-icon {
+    width: 22px;
+    height: 22px;
+    stroke: white;
+}
+
+.notif-pink { background: var(--primary-pink); }
+.notif-gold { background: var(--primary-gold); }
+.notif-gold .notif-icon { stroke: var(--bg-dark); }
+.notif-green { background: var(--success-green); }
+.notif-green .notif-icon { stroke: var(--bg-dark); }
+.notif-blue { background: #3b82f6; }
+.notif-purple { background: #8b5cf6; }
+.notif-default { background: var(--bg-secondary); }
+
+/* Settings Page Styles */
+.settings-section {
+    padding: 0;
+}
+
+.settings-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    color: var(--text-gray);
+    text-decoration: none;
+    border-bottom: 1px solid var(--bg-secondary);
+    transition: color 0.3s ease;
+}
+
+.settings-item:last-child {
+    border-bottom: none;
+}
+
+.settings-item:hover {
+    color: var(--text-white);
+}
+
+.settings-arrow {
+    width: 18px;
+    height: 18px;
+}
+
+.settings-subscription {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+.subscription-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.vip-badge {
+    background: var(--primary-gold);
+    color: var(--bg-dark);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.expire-date {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+}
+
+.no-subscription {
+    color: var(--text-gray);
+}
+
+/* Market Page Styles */
+.market-section {
+    margin: 25px 0;
+}
+
+.section-icon {
+    width: 20px;
+    height: 20px;
+    fill: var(--primary-gold);
+    margin-right: 8px;
+}
+
+.token-gold {
+    fill: var(--primary-gold);
+}
+
+.plans-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.plan-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid var(--bg-secondary);
+}
+
+.plan-card.featured {
+    background: linear-gradient(135deg, var(--primary-gold) 0%, #ffaa00 100%);
+    border: none;
+}
+
+.plan-card.featured .plan-name,
+.plan-card.featured .plan-price,
+.plan-card.featured li {
+    color: var(--bg-dark);
+}
+
+.plan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.plan-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.plan-price {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-pink);
+}
+
+.plan-price span {
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+.popular-badge {
+    background: var(--bg-dark);
+    color: var(--primary-gold);
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.plan-features {
+    list-style: none;
+    margin-bottom: 15px;
+}
+
+.plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    margin-bottom: 8px;
+}
+
+.plan-features svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--success-green);
+    flex-shrink: 0;
+}
+
+.plan-card.featured .plan-features svg {
+    stroke: var(--bg-dark);
+}
+
+.featured-btn {
+    background: var(--bg-dark) !important;
+    color: var(--primary-gold) !important;
+}
+
+.token-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.token-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid var(--bg-secondary);
+}
+
+.token-card.featured {
+    border-color: var(--primary-pink);
+}
+
+.token-amount {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.token-icon-large {
+    width: 30px;
+    height: 30px;
+    fill: var(--primary-gold);
+}
+
+.token-amount span {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.token-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.token-price {
+    color: var(--primary-pink);
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.buy-btn {
+    width: 100%;
+    background: var(--primary-pink);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.buy-btn:hover {
+    transform: scale(1.02);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    padding: 20px;
+}
+
+.btn-secondary {
+    flex: 1;
+    background: var(--bg-secondary);
+    color: var(--text-white);
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-primary {
+    flex: 1;
+    background: var(--primary-pink);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.success-modal {
+    text-align: center;
+    padding: 40px 30px;
+}
+
+.success-icon {
+    width: 70px;
+    height: 70px;
+    background: var(--success-green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.success-icon svg {
+    width: 35px;
+    height: 35px;
+    stroke: var(--bg-dark);
+}
+
+.success-modal h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.success-modal p {
+    color: var(--text-gray);
+    margin-bottom: 25px;
+}
+
+/* Guest Access Banner */
+.guest-banner {
+    background: linear-gradient(135deg, var(--primary-pink) 0%, #d4007d 100%);
+    border-radius: 15px;
+    padding: 15px 20px;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.guest-banner-text {
+    font-size: 0.9rem;
+}
+
+.guest-banner-text strong {
+    display: block;
+    margin-bottom: 3px;
+}
+
+.guest-banner-btn {
+    background: white;
+    color: var(--primary-pink);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.empty-title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.empty-subtitle {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}

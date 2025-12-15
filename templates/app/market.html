@@ -3,74 +3,92 @@
 {% block title %}Marché - Shida{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white pb-20">
-    <div class="p-4">
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl font-bold text-pink-500">EXPLORER LE MARCHÉ</h1>
-            <div class="flex items-center bg-gray-800 rounded-full px-4 py-2">
-                <i data-feather="circle" class="w-5 h-5 text-yellow-400 mr-2"></i>
-                <span id="token-count" class="font-bold">0</span>
-            </div>
+<div class="home-container">
+    <div class="page-header">
+        <h1 class="page-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="title-icon">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            Marché
+        </h1>
+        <div class="token-display">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="token-icon-small">
+                <circle cx="12" cy="12" r="10"></circle>
+            </svg>
+            <span id="token-count">0</span>
         </div>
-        
-        <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl p-4 mb-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-black text-sm font-medium">CODE PROMO</p>
-                    <p class="text-black text-xs opacity-75">Entrez votre code pour des avantages</p>
-                </div>
-                <button onclick="showPromoModal()" class="bg-black text-yellow-500 px-4 py-2 rounded-lg font-bold">
-                    APPLIQUER
-                </button>
+    </div>
+    
+    <div class="vip-card fade-in" onclick="showPromoModal()">
+        <div class="vip-glow"></div>
+        <div class="vip-content">
+            <div class="vip-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
             </div>
+            <div class="vip-info">
+                <div class="vip-title">Code Promo</div>
+                <div class="vip-subtitle">Entrez votre code pour des avantages</div>
+            </div>
+            <span class="premium-badge">
+                APPLIQUER
+            </span>
         </div>
-        
-        <div class="mb-8">
-            <h2 class="text-xl font-bold mb-4 flex items-center">
-                <i data-feather="star" class="w-5 h-5 text-yellow-400 mr-2"></i>
-                Abonnements VIP
-            </h2>
-            <div id="subscription-plans" class="space-y-4">
-            </div>
+    </div>
+    
+    <div class="market-section">
+        <h2 class="section-title">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="section-icon">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            Abonnements VIP
+        </h2>
+        <div id="subscription-plans" class="plans-list"></div>
+    </div>
+    
+    <div class="market-section">
+        <h2 class="section-title">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="section-icon token-gold">
+                <circle cx="12" cy="12" r="10"></circle>
+            </svg>
+            Packs de Jetons
+        </h2>
+        <div id="token-plans" class="token-grid"></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="promo-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Code Promo</h3>
+            <button class="modal-close" onclick="hidePromoModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
         </div>
-        
-        <div>
-            <h2 class="text-xl font-bold mb-4 flex items-center">
-                <i data-feather="circle" class="w-5 h-5 text-yellow-400 mr-2"></i>
-                Packs de Jetons
-            </h2>
-            <div id="token-plans" class="grid grid-cols-2 gap-4">
-            </div>
+        <input type="text" id="promo-code" placeholder="Entrez votre code" class="form-input">
+        <div class="modal-actions">
+            <button onclick="hidePromoModal()" class="btn-secondary">Annuler</button>
+            <button onclick="applyPromo()" class="btn-primary">Appliquer</button>
         </div>
     </div>
 </div>
 
-<div id="promo-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
-    <div class="bg-gray-800 rounded-xl p-6 mx-4 w-full max-w-md">
-        <h3 class="text-xl font-bold text-white mb-4">Code Promo</h3>
-        <input type="text" id="promo-code" placeholder="Entrez votre code" 
-            class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-pink-500">
-        <div class="flex space-x-4">
-            <button onclick="hidePromoModal()" class="flex-1 bg-gray-600 text-white py-3 rounded-lg font-bold">
-                Annuler
-            </button>
-            <button onclick="applyPromo()" class="flex-1 bg-pink-500 text-white py-3 rounded-lg font-bold">
-                Appliquer
-            </button>
+<div class="modal-overlay" id="success-modal">
+    <div class="modal-content success-modal">
+        <div class="success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
         </div>
-    </div>
-</div>
-
-<div id="success-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
-    <div class="bg-gray-800 rounded-xl p-6 mx-4 w-full max-w-md text-center">
-        <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i data-feather="check" class="w-10 h-10 text-white"></i>
-        </div>
-        <h3 class="text-xl font-bold text-white mb-2">Succès !</h3>
-        <p id="success-message" class="text-gray-400 mb-4"></p>
-        <button onclick="hideSuccessModal()" class="w-full bg-pink-500 text-white py-3 rounded-lg font-bold">
-            Continuer
-        </button>
+        <h3>Succès !</h3>
+        <p id="success-message"></p>
+        <button onclick="hideSuccessModal()" class="cta-button">Continuer</button>
     </div>
 </div>
 
@@ -96,8 +114,6 @@ async function loadMarket() {
         
         renderSubscriptionPlans(subscriptionPlans);
         renderTokenPlans(tokenPlans);
-        
-        feather.replace();
     } catch (error) {
         console.error('Error loading market:', error);
     }
@@ -106,23 +122,25 @@ async function loadMarket() {
 function renderSubscriptionPlans(plans) {
     const container = document.getElementById('subscription-plans');
     container.innerHTML = plans.map(plan => `
-        <div class="bg-gradient-to-r ${plan.is_featured ? 'from-yellow-500 to-yellow-600' : 'from-gray-800 to-gray-700'} rounded-xl p-4 ${plan.is_featured ? 'border-2 border-yellow-400' : ''}">
-            <div class="flex justify-between items-start mb-3">
-                <div>
-                    <h3 class="font-bold ${plan.is_featured ? 'text-black' : 'text-white'}">${plan.name}</h3>
-                    <p class="text-2xl font-bold ${plan.is_featured ? 'text-black' : 'text-pink-500'}">$${plan.price}<span class="text-sm font-normal">/${plan.duration_days}j</span></p>
+        <div class="plan-card ${plan.is_featured ? 'featured' : ''}">
+            <div class="plan-header">
+                <div class="plan-info">
+                    <h3 class="plan-name">${plan.name}</h3>
+                    <p class="plan-price">$${plan.price}<span>/${plan.duration_days}j</span></p>
                 </div>
-                ${plan.is_featured ? '<span class="bg-black text-yellow-500 px-2 py-1 rounded text-xs font-bold">POPULAIRE</span>' : ''}
+                ${plan.is_featured ? '<span class="popular-badge">POPULAIRE</span>' : ''}
             </div>
-            <ul class="space-y-2 mb-4">
+            <ul class="plan-features">
                 ${(plan.features || []).map(f => `
-                    <li class="flex items-center text-sm ${plan.is_featured ? 'text-black' : 'text-gray-300'}">
-                        <i data-feather="check" class="w-4 h-4 mr-2 ${plan.is_featured ? 'text-black' : 'text-green-500'}"></i>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
                         ${f}
                     </li>
                 `).join('')}
             </ul>
-            <button onclick="purchasePlan(${plan.id})" class="w-full ${plan.is_featured ? 'bg-black text-yellow-500' : 'bg-pink-500 text-white'} py-3 rounded-lg font-bold">
+            <button onclick="purchasePlan(${plan.id})" class="cta-button ${plan.is_featured ? 'featured-btn' : ''}">
                 S'abonner
             </button>
         </div>
@@ -132,17 +150,16 @@ function renderSubscriptionPlans(plans) {
 function renderTokenPlans(plans) {
     const container = document.getElementById('token-plans');
     container.innerHTML = plans.map(plan => `
-        <div class="bg-gray-800 rounded-xl p-4 ${plan.is_featured ? 'border-2 border-pink-500' : ''}">
-            <div class="text-center mb-3">
-                <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <span class="text-black font-bold">${plan.tokens_included}</span>
-                </div>
-                <h3 class="font-bold text-white">${plan.name}</h3>
-                <p class="text-xl font-bold text-pink-500">$${plan.price}</p>
+        <div class="token-card ${plan.is_featured ? 'featured' : ''}">
+            <div class="token-amount">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="token-icon-large">
+                    <circle cx="12" cy="12" r="10"></circle>
+                </svg>
+                <span>${plan.tokens_included}</span>
             </div>
-            <button onclick="purchasePlan(${plan.id})" class="w-full bg-pink-500 text-white py-2 rounded-lg font-bold text-sm">
-                Acheter
-            </button>
+            <h3 class="token-name">${plan.name}</h3>
+            <p class="token-price">$${plan.price}</p>
+            <button onclick="purchasePlan(${plan.id})" class="buy-btn">Acheter</button>
         </div>
     `).join('');
 }
@@ -173,13 +190,11 @@ async function purchasePlan(planId) {
 }
 
 function showPromoModal() {
-    document.getElementById('promo-modal').classList.remove('hidden');
-    document.getElementById('promo-modal').classList.add('flex');
+    document.getElementById('promo-modal').classList.add('active');
 }
 
 function hidePromoModal() {
-    document.getElementById('promo-modal').classList.add('hidden');
-    document.getElementById('promo-modal').classList.remove('flex');
+    document.getElementById('promo-modal').classList.remove('active');
     document.getElementById('promo-code').value = '';
 }
 
@@ -216,14 +231,11 @@ async function applyPromo() {
 
 function showSuccessModal(message) {
     document.getElementById('success-message').textContent = message;
-    document.getElementById('success-modal').classList.remove('hidden');
-    document.getElementById('success-modal').classList.add('flex');
-    feather.replace();
+    document.getElementById('success-modal').classList.add('active');
 }
 
 function hideSuccessModal() {
-    document.getElementById('success-modal').classList.add('hidden');
-    document.getElementById('success-modal').classList.remove('flex');
+    document.getElementById('success-modal').classList.remove('active');
 }
 
 document.addEventListener('DOMContentLoaded', loadMarket);
