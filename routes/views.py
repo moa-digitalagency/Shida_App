@@ -21,9 +21,8 @@ def home():
     return render_template('app/home.html')
 
 @views.route('/discovery')
-@login_required
 def discovery():
-    return render_template('app/discovery.html')
+    return render_template('app/discovery.html', is_guest=not current_user.is_authenticated)
 
 @views.route('/negotiations')
 @login_required

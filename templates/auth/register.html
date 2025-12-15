@@ -8,37 +8,224 @@
     <div class="logo-text">SHIDA</div>
     <div class="tagline">Zala na Temps</div>
     
-    <form class="auth-form" id="registerForm">
-        <div class="form-group">
-            <input type="text" class="form-input" id="name" placeholder="Prénom" required>
+    <div class="onboarding-steps" id="onboardingSteps">
+        <div class="step-indicator">
+            <div class="step-dot active" data-step="1"></div>
+            <div class="step-line"></div>
+            <div class="step-dot" data-step="2"></div>
+            <div class="step-line"></div>
+            <div class="step-dot" data-step="3"></div>
         </div>
-        <div class="form-group">
-            <input type="number" class="form-input" id="age" placeholder="Âge" min="18" max="99" required>
-        </div>
-        <div class="form-group">
-            <input type="email" class="form-input" id="email" placeholder="Email" required>
-        </div>
-        <div class="form-group">
-            <input type="password" class="form-input" id="password" placeholder="Mot de passe" required minlength="6">
-        </div>
-        <button type="submit" class="auth-button">Créer mon compte</button>
-    </form>
+        
+        <form class="auth-form" id="registerForm">
+            <div class="onboarding-step active" data-step="1">
+                <h3 class="step-title">Bienvenue sur Shida</h3>
+                <p class="step-description">Commençons par faire connaissance</p>
+                <div class="form-group">
+                    <label for="name">Votre prénom</label>
+                    <input type="text" class="form-input" id="name" placeholder="Entrez votre prénom" required autocomplete="given-name">
+                </div>
+                <div class="form-group">
+                    <label for="gender">Vous êtes</label>
+                    <div class="gender-select">
+                        <button type="button" class="gender-btn" data-gender="M">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="7" r="4"></circle>
+                                <path d="M5 21v-2a7 7 0 0 1 14 0v2"></path>
+                            </svg>
+                            Homme
+                        </button>
+                        <button type="button" class="gender-btn" data-gender="F">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="7" r="4"></circle>
+                                <path d="M5 21v-2a7 7 0 0 1 14 0v2"></path>
+                            </svg>
+                            Femme
+                        </button>
+                    </div>
+                    <input type="hidden" id="gender" value="">
+                </div>
+                <button type="button" class="auth-button next-step" data-next="2">Continuer</button>
+            </div>
+            
+            <div class="onboarding-step" data-step="2">
+                <h3 class="step-title">Votre date de naissance</h3>
+                <p class="step-description">Vous devez avoir au moins 18 ans</p>
+                <div class="form-group">
+                    <label for="birthdate">Date de naissance</label>
+                    <div class="date-picker-group">
+                        <select class="form-input date-select" id="birthDay" required>
+                            <option value="">Jour</option>
+                        </select>
+                        <select class="form-input date-select" id="birthMonth" required>
+                            <option value="">Mois</option>
+                            <option value="1">Janvier</option>
+                            <option value="2">Février</option>
+                            <option value="3">Mars</option>
+                            <option value="4">Avril</option>
+                            <option value="5">Mai</option>
+                            <option value="6">Juin</option>
+                            <option value="7">Juillet</option>
+                            <option value="8">Août</option>
+                            <option value="9">Septembre</option>
+                            <option value="10">Octobre</option>
+                            <option value="11">Novembre</option>
+                            <option value="12">Décembre</option>
+                        </select>
+                        <select class="form-input date-select" id="birthYear" required>
+                            <option value="">Année</option>
+                        </select>
+                    </div>
+                    <p class="date-error" id="dateError" style="display: none;">Vous devez avoir au moins 18 ans</p>
+                </div>
+                <div class="step-buttons">
+                    <button type="button" class="auth-button secondary prev-step" data-prev="1">Retour</button>
+                    <button type="button" class="auth-button next-step" data-next="3">Continuer</button>
+                </div>
+            </div>
+            
+            <div class="onboarding-step" data-step="3">
+                <h3 class="step-title">Créez votre compte</h3>
+                <p class="step-description">Dernière étape pour rejoindre Shida</p>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-input" id="email" placeholder="votre@email.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" class="form-input" id="password" placeholder="Minimum 6 caractères" required minlength="6" autocomplete="new-password">
+                </div>
+                <div class="step-buttons">
+                    <button type="button" class="auth-button secondary prev-step" data-prev="2">Retour</button>
+                    <button type="submit" class="auth-button">Créer mon compte</button>
+                </div>
+            </div>
+        </form>
+    </div>
     
     <div class="auth-link">
         Déjà un compte? <a href="/">Se connecter</a>
+    </div>
+    
+    <div class="discover-link">
+        <a href="/discovery">Explorer les profils sans compte</a>
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const daySelect = document.getElementById('birthDay');
+    for (let i = 1; i <= 31; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        daySelect.appendChild(option);
+    }
+    
+    const yearSelect = document.getElementById('birthYear');
+    const currentYear = new Date().getFullYear();
+    for (let year = currentYear - 18; year >= currentYear - 80; year--) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+    }
+    
+    document.querySelectorAll('.gender-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            document.getElementById('gender').value = this.dataset.gender;
+        });
+    });
+    
+    document.querySelectorAll('.next-step').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const currentStep = this.closest('.onboarding-step');
+            const nextStepNum = this.dataset.next;
+            
+            if (currentStep.dataset.step === '1') {
+                const name = document.getElementById('name').value;
+                const gender = document.getElementById('gender').value;
+                if (!name.trim()) {
+                    alert('Veuillez entrer votre prénom');
+                    return;
+                }
+                if (!gender) {
+                    alert('Veuillez sélectionner votre genre');
+                    return;
+                }
+            }
+            
+            if (currentStep.dataset.step === '2') {
+                const day = document.getElementById('birthDay').value;
+                const month = document.getElementById('birthMonth').value;
+                const year = document.getElementById('birthYear').value;
+                
+                if (!day || !month || !year) {
+                    alert('Veuillez compléter votre date de naissance');
+                    return;
+                }
+                
+                const birthDate = new Date(year, month - 1, day);
+                const today = new Date();
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const m = today.getMonth() - birthDate.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                
+                if (age < 18) {
+                    document.getElementById('dateError').style.display = 'block';
+                    return;
+                }
+                document.getElementById('dateError').style.display = 'none';
+            }
+            
+            goToStep(nextStepNum);
+        });
+    });
+    
+    document.querySelectorAll('.prev-step').forEach(btn => {
+        btn.addEventListener('click', function() {
+            goToStep(this.dataset.prev);
+        });
+    });
+    
+    function goToStep(stepNum) {
+        document.querySelectorAll('.onboarding-step').forEach(step => step.classList.remove('active'));
+        document.querySelectorAll('.step-dot').forEach(dot => dot.classList.remove('active'));
+        
+        document.querySelector(`.onboarding-step[data-step="${stepNum}"]`).classList.add('active');
+        for (let i = 1; i <= stepNum; i++) {
+            document.querySelector(`.step-dot[data-step="${i}"]`).classList.add('active');
+        }
+    }
+});
+
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('name').value;
-    const age = document.getElementById('age').value;
+    const gender = document.getElementById('gender').value;
+    const day = document.getElementById('birthDay').value;
+    const month = document.getElementById('birthMonth').value;
+    const year = document.getElementById('birthYear').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    await ShidaApp.register(name, email, password, age);
+    
+    const birthDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    
+    const today = new Date();
+    const birth = new Date(year, month - 1, day);
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+        age--;
+    }
+    
+    await ShidaApp.register(name, email, password, age, gender, birthDate);
 });
 </script>
 {% endblock %}

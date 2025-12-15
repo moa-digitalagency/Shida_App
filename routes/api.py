@@ -161,10 +161,12 @@ def submit_verification():
     return jsonify(result), 400
 
 @api.route('/discovery')
-@login_required
 def get_discovery_profiles():
     from services.match_service import MatchService
-    profiles = MatchService.get_discovery_profiles(current_user, limit=20)
+    if current_user.is_authenticated:
+        profiles = MatchService.get_discovery_profiles(current_user, limit=20)
+    else:
+        profiles = MatchService.get_public_profiles(limit=10)
     return jsonify([p.to_dict() for p in profiles])
 
 @api.route('/discovery/swipe', methods=['POST'])

@@ -122,6 +122,16 @@ class MatchService:
         return profiles[:limit]
     
     @staticmethod
+    def get_public_profiles(limit=10):
+        profiles = Profile.query.join(User).filter(
+            User.is_active == True,
+            User.is_banned == False,
+            User.ghost_mode == False,
+            Profile.is_approved == True
+        ).order_by(db.func.random()).limit(limit).all()
+        return profiles
+    
+    @staticmethod
     def process_like(sender, receiver_id):
         receiver = User.query.get(receiver_id)
         if not receiver or receiver.is_banned:
