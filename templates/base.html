@@ -26,6 +26,9 @@
 <body>
     <div class="particles"></div>
     <div class="app-container">
+        {% if breadcrumbs and breadcrumbs|length > 1 %}
+        {% include "components/breadcrumb.html" %}
+        {% endif %}
         {% block content %}{% endblock %}
     </div>
     <script src="/statics/js/app.js"></script>

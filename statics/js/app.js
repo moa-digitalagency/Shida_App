@@ -31,6 +31,7 @@ const ShidaApp = {
         } catch (error) {
             console.log('Not authenticated');
         }
+        window.dispatchEvent(new CustomEvent('ShidaReady'));
     },
     
     async login(email, password) {
@@ -195,6 +196,12 @@ const Discovery = {
             </div>
             <div class="swipe-indicator left">✕</div>
             <div class="swipe-indicator right">♥</div>
+            <div class="swipe-overlay like">
+                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </div>
+            <div class="swipe-overlay dislike">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </div>
         `;
         
         stack.appendChild(card);
@@ -206,11 +213,31 @@ const Discovery = {
         const likeBtn = document.getElementById('likeBtn');
         
         if (dislikeBtn) {
-            dislikeBtn.addEventListener('click', () => this.swipe('left'));
+            dislikeBtn.addEventListener('click', () => {
+                this.showButtonFeedback('left');
+                setTimeout(() => this.swipe('left'), 200);
+            });
         }
         
         if (likeBtn) {
-            likeBtn.addEventListener('click', () => this.swipe('right'));
+            likeBtn.addEventListener('click', () => {
+                this.showButtonFeedback('right');
+                setTimeout(() => this.swipe('right'), 200);
+            });
+        }
+    },
+    
+    showButtonFeedback(direction) {
+        const card = document.getElementById('currentCard');
+        if (!card) return;
+        
+        const overlay = direction === 'right' 
+            ? card.querySelector('.swipe-overlay.like')
+            : card.querySelector('.swipe-overlay.dislike');
+        
+        if (overlay) {
+            overlay.style.opacity = '0.8';
+            overlay.style.transition = 'opacity 0.2s ease';
         }
     },
     
@@ -243,16 +270,26 @@ const Discovery = {
         
         const leftIndicator = card.querySelector('.swipe-indicator.left');
         const rightIndicator = card.querySelector('.swipe-indicator.right');
+        const likeOverlay = card.querySelector('.swipe-overlay.like');
+        const dislikeOverlay = card.querySelector('.swipe-overlay.dislike');
         
         if (this.currentX < -50) {
-            leftIndicator.style.opacity = Math.min(1, Math.abs(this.currentX) / 150);
+            const opacity = Math.min(1, Math.abs(this.currentX) / 150);
+            leftIndicator.style.opacity = opacity;
             rightIndicator.style.opacity = 0;
+            if (dislikeOverlay) dislikeOverlay.style.opacity = opacity * 0.8;
+            if (likeOverlay) likeOverlay.style.opacity = 0;
         } else if (this.currentX > 50) {
-            rightIndicator.style.opacity = Math.min(1, this.currentX / 150);
+            const opacity = Math.min(1, this.currentX / 150);
+            rightIndicator.style.opacity = opacity;
             leftIndicator.style.opacity = 0;
+            if (likeOverlay) likeOverlay.style.opacity = opacity * 0.8;
+            if (dislikeOverlay) dislikeOverlay.style.opacity = 0;
         } else {
             leftIndicator.style.opacity = 0;
             rightIndicator.style.opacity = 0;
+            if (likeOverlay) likeOverlay.style.opacity = 0;
+            if (dislikeOverlay) dislikeOverlay.style.opacity = 0;
         }
     },
     
