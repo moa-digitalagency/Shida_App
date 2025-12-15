@@ -103,8 +103,31 @@ See `docs/API.md` for full documentation.
 - Mobile-first responsive design
 - Game-like animations and effects
 
+## Navigation Tab Order
+
+The bottom navigation tabs are ordered as:
+1. **Accueil** (Home) - Dashboard with stats
+2. **Alertes** - Notifications
+3. **Explorer** - Discovery/swipe profiles (accessible without login)
+4. **Négociation** - Chat with matches (requires login)
+5. **Profil** - User profile and settings (requires login)
+
+## Guest Access
+
+- Discovery page is visible without login for browsing profiles
+- Like/dislike interactions require login (redirects to login page)
+- Market page is visible without login
+
+## Database Initialization
+
+The app uses `data/init_db.py` which contains hardcoded seed data for production deployment. This ensures profiles and initial data are available without relying on JSON files.
+
 ## Recent Changes
 
+- Changed tab order to: Home, Alertes, Explorer, Négociation, Profil
+- Replaced "Messages" label with "Négociation" throughout the app
+- Added login requirement for swipe interactions on discovery page
+- Created init_db.py script with hardcoded profile data for production
 - Restructured models into domain-specific files (auth, social, commerce, content, admin)
 - Harmonized styles across all pages with consistent CSS design system
 - Implemented guest access for discovery and market pages
