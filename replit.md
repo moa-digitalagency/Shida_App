@@ -24,7 +24,14 @@ Shida is a mobile-first dating app featuring:
 ```
 ├── app.py              # Flask app initialization
 ├── main.py             # Entry point
-├── models/             # Database models (User, Profile, Match, Message)
+├── models/             # Database models (domain-specific)
+│   ├── __init__.py    # Re-exports all models
+│   ├── base.py        # SQLAlchemy db instance
+│   ├── auth.py        # User, AdminUser
+│   ├── social.py      # Profile, Like, Match, Message
+│   ├── commerce.py    # Subscription, TokenTransaction, PricingPlan, PromoCode
+│   ├── content.py     # Notification, ContentPage, MatchingConfig
+│   └── admin.py       # Report, AuditLog, SupportTicket, TicketResponse
 ├── routes/             # API and view routes
 │   ├── api.py         # REST API endpoints
 │   └── views.py       # Page routes
@@ -98,6 +105,9 @@ See `docs/API.md` for full documentation.
 
 ## Recent Changes
 
+- Restructured models into domain-specific files (auth, social, commerce, content, admin)
+- Harmonized styles across all pages with consistent CSS design system
+- Implemented guest access for discovery and market pages
 - Replaced all emojis with SVG icons
 - Added Feather Icons CDN to base template
 - Redesigned home dashboard with stats cards
