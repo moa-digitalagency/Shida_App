@@ -1,11 +1,24 @@
 {% extends "base.html" %}
 
-{% block title %}Shida - Négociations{% endblock %}
+{% block title %}Shida - Negociations{% endblock %}
 
 {% block content %}
-<div style="padding-top: 20px;">
-    <h1 class="page-title">Négociations</h1>
-    <p class="page-subtitle" id="matchesCount">Chargement...</p>
+<div class="negotiations-container">
+    <div class="page-header">
+        <h1 class="page-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="title-icon">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            NEGOCIATIONS
+        </h1>
+        <p class="page-subtitle" id="matchesCount">Chargement...</p>
+    </div>
+    
+    <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all">Toutes</button>
+        <button class="filter-tab" data-filter="unread">Non lues</button>
+        <button class="filter-tab" data-filter="team">Equipe Shida</button>
+    </div>
     
     <div class="conversation-list" id="conversationList">
         <div class="loading-spinner">
@@ -19,9 +32,126 @@
 
 {% block scripts %}
 <script>
+let allMatches = [];
+
 document.addEventListener('DOMContentLoaded', async () => {
     await ShidaApp.init();
-    Negotiations.loadMatches();
+    await loadMatches();
+    setupFilterTabs();
 });
+
+async function loadMatches() {
+    try {
+        const response = await fetch('/api/matches');
+        allMatches = await response.json();
+        renderMatches(allMatches);
+    } catch (error) {
+        console.error('Failed to load matches:', error);
+    }
+}
+
+function renderMatches(matches) {
+    const list = document.getElementById('conversationList');
+    const subtitle = document.getElementById('matchesCount');
+    
+    if (matches.length === 0) {
+        subtitle.textContent = '0 affaire en cours';
+        list.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
+                <h3>Aucune negociation en cours</h3>
+                <p>Explorez le marche pour trouver des partenaires</p>
+                <a href="/discovery" class="empty-cta">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                    </svg>
+                    Explorer le marche
+                </a>
+            </div>
+        `;
+        return;
+    }
+    
+    subtitle.textContent = `${matches.length} affaire${matches.length > 1 ? 's' : ''} en cours`;
+    
+    list.innerHTML = matches.map(match => {
+        const other = match.other_user;
+        const isShidaTeam = other?.name === 'Equipe Shida';
+        const hasUnread = match.unread_count > 0;
+        
+        return `
+            <a href="/chat/${match.id}" class="conversation-item ${hasUnread ? 'unread' : ''}">
+                <div class="avatar-wrapper">
+                    <img src="${other?.photo_url || 'https://via.placeholder.com/55'}" alt="${other?.name}" class="conversation-avatar">
+                    ${other?.is_verified ? `
+                        <div class="verified-indicator">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                            </svg>
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="conversation-info">
+                    <div class="conversation-header">
+                        <span class="conversation-name">${other?.name || 'Unknown'}${!isShidaTeam ? `, ${other?.age || ''}` : ''}</span>
+                        <span class="conversation-time">${formatTime(match.last_message?.created_at)}</span>
+                    </div>
+                    <div class="conversation-preview ${isShidaTeam ? 'shida-team' : ''}">
+                        ${isShidaTeam ? `
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="shida-icon">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                        ` : ''}
+                        ${match.last_message?.content || 'Demarrer la conversation...'}
+                    </div>
+                </div>
+                ${hasUnread ? `<span class="unread-badge">${match.unread_count}</span>` : ''}
+                <div class="conversation-arrow">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </div>
+            </a>
+        `;
+    }).join('');
+}
+
+function setupFilterTabs() {
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            const filter = tab.dataset.filter;
+            let filtered = allMatches;
+            
+            if (filter === 'unread') {
+                filtered = allMatches.filter(m => m.unread_count > 0);
+            } else if (filter === 'team') {
+                filtered = allMatches.filter(m => m.other_user?.name === 'Equipe Shida');
+            }
+            
+            renderMatches(filtered);
+        });
+    });
+}
+
+function formatTime(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diff = now - date;
+    
+    if (diff < 60000) return 'A l\'instant';
+    if (diff < 3600000) return `${Math.floor(diff/60000)}min`;
+    if (diff < 86400000) return `${Math.floor(diff/3600000)}h`;
+    if (diff < 604800000) return `${Math.floor(diff/86400000)}j`;
+    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+}
 </script>
 {% endblock %}

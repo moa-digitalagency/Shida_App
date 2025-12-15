@@ -1,10 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %}Shida - Découverte{% endblock %}
+{% block title %}Shida - Decouverte{% endblock %}
 
 {% block content %}
 <div class="discovery-container">
-    <div class="logo-text" style="font-size: 1.8rem; margin-bottom: 10px;">SHIDA</div>
+    <div class="discovery-header">
+        <div class="logo-text" style="font-size: 1.8rem;">SHIDA</div>
+        <a href="/market" class="token-display">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="token-icon-small">
+                <circle cx="12" cy="12" r="10"></circle>
+            </svg>
+            <span id="headerTokens">0</span>
+        </a>
+    </div>
     
     <div class="card-stack" id="cardStack">
         <div class="loading-spinner">
@@ -13,23 +21,63 @@
     </div>
     
     <div class="action-buttons">
-        <button class="action-btn dislike" id="dislikeBtn">✕</button>
-        <button class="action-btn like" id="likeBtn">♥</button>
+        <button class="action-btn dislike" id="dislikeBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <button class="action-btn superlike" id="superlikeBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+        </button>
+        <button class="action-btn like" id="likeBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+        </button>
     </div>
 </div>
 
 <div class="match-overlay" id="matchOverlay">
-    <div class="match-popup" style="position: relative;">
-        <button class="close-popup" onclick="Discovery.hideMatchPopup()">✕</button>
-        <h2 class="match-title">Affaire Conclue !</h2>
-        <div class="match-profiles">
-            <img src="https://via.placeholder.com/80" class="match-avatar" alt="You">
-            <span class="match-connector">—</span>
-            <img src="https://via.placeholder.com/80" class="match-avatar" alt="Match">
+    <div class="confetti-container" id="confettiContainer"></div>
+    <div class="match-popup">
+        <button class="close-popup" onclick="Discovery.hideMatchPopup()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <div class="match-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
         </div>
-        <p class="match-subtitle">Vous avez les mêmes objectifs.</p>
-        <button class="match-cta" onclick="Discovery.useTokenAndChat()">Payer 1 Jeton pour saluer</button>
-        <button class="match-dismiss" onclick="Discovery.hideMatchPopup()">Retour à l'accueil</button>
+        <h2 class="match-title">AFFAIRE CONCLUE !</h2>
+        <div class="match-profiles">
+            <img src="https://via.placeholder.com/80" class="match-avatar" id="matchAvatarMe" alt="You">
+            <div class="match-connector">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+            </div>
+            <img src="https://via.placeholder.com/80" class="match-avatar" id="matchAvatarOther" alt="Match">
+        </div>
+        <p class="match-subtitle">Vous avez les memes objectifs</p>
+        <div class="compatibility-score" id="compatibilityScore">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="score-icon">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <span>85% compatible</span>
+        </div>
+        <button class="match-cta" id="greetBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="cta-token">
+                <circle cx="12" cy="12" r="10"></circle>
+            </svg>
+            Payer 1 Jeton pour saluer
+        </button>
+        <button class="match-dismiss" onclick="Discovery.hideMatchPopup()">Retour a la decouverte</button>
     </div>
 </div>
 
@@ -41,6 +89,10 @@
 document.addEventListener('DOMContentLoaded', async () => {
     await ShidaApp.init();
     Discovery.init();
+    
+    if (ShidaApp.currentUser) {
+        document.getElementById('headerTokens').textContent = ShidaApp.currentUser.tokens || 0;
+    }
 });
 </script>
 {% endblock %}

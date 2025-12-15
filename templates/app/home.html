@@ -3,28 +3,42 @@
 {% block title %}Shida - Accueil{% endblock %}
 
 {% block content %}
-<div style="padding-top: 20px;">
+<div class="home-container">
     <div class="logo-rings"></div>
     <div class="logo-text">SHIDA</div>
     <div class="tagline">Zala na Temps</div>
-    <p style="text-align: center; color: var(--text-gray); margin-top: 5px;">Bienvenue dans votre espace personnel.</p>
+    <p class="welcome-text">Bienvenue dans votre espace personnel</p>
     
-    <div class="stat-card" style="animation-delay: 0.1s;">
-        <div class="stat-title">Vues de votre dossier</div>
+    <div class="stat-card fade-in" style="animation-delay: 0.1s;">
+        <div class="stat-header">
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            </div>
+            <span class="stat-title">Vues de votre dossier</span>
+        </div>
         <div class="stat-value">
             <span id="viewsCount">0</span>
-            <span class="stat-badge" id="viewsChange">↗ +0%</span>
+            <span class="stat-badge positive" id="viewsChange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="badge-icon">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
+                </svg>
+                +0%
+            </span>
         </div>
-        <div style="color: var(--text-gray); font-size: 0.85rem;">cette semaine</div>
+        <div class="stat-period">cette semaine</div>
         
         <div class="chart-container">
-            <div class="chart-bar" style="height: 0%;"></div>
-            <div class="chart-bar" style="height: 0%;"></div>
-            <div class="chart-bar" style="height: 0%;"></div>
-            <div class="chart-bar" style="height: 0%;"></div>
-            <div class="chart-bar" style="height: 0%;"></div>
-            <div class="chart-bar" style="height: 0%;"></div>
-            <div class="chart-bar" style="height: 0%;"></div>
+            <div class="chart-bar" data-day="0" style="height: 10%;"></div>
+            <div class="chart-bar" data-day="1" style="height: 10%;"></div>
+            <div class="chart-bar" data-day="2" style="height: 10%;"></div>
+            <div class="chart-bar" data-day="3" style="height: 10%;"></div>
+            <div class="chart-bar" data-day="4" style="height: 10%;"></div>
+            <div class="chart-bar" data-day="5" style="height: 10%;"></div>
+            <div class="chart-bar" data-day="6" style="height: 10%;"></div>
         </div>
         <div class="chart-labels">
             <span class="chart-label">Lun</span>
@@ -37,26 +51,92 @@
         </div>
     </div>
     
-    <div class="vip-card" style="animation-delay: 0.2s;">
-        <div class="crown-icon">👑</div>
-        <div class="vip-title" id="vipType">VIP Gold</div>
-        <div class="vip-subtitle">Abonnement actif</div>
-        <span class="premium-badge">Premium</span>
+    <div class="vip-card fade-in" style="animation-delay: 0.2s;" id="vipCard">
+        <div class="vip-glow"></div>
+        <div class="vip-content">
+            <div class="vip-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4l3.5 2-3.5 2-3.5-2L12 5zm0 14c-3.72-.97-6.63-4.6-7-8.53l7-2.94 7 2.94C18.63 14.4 15.72 18.03 12 19z"/>
+                </svg>
+            </div>
+            <div class="vip-info">
+                <div class="vip-title" id="vipType">VIP Gold</div>
+                <div class="vip-subtitle">Abonnement actif</div>
+            </div>
+            <span class="premium-badge">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="badge-star">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                Premium
+            </span>
+        </div>
     </div>
     
-    <a href="/discovery" class="cta-button" style="animation-delay: 0.3s;">
-        Explorer le marché →
+    <a href="/discovery" class="cta-button fade-in" style="animation-delay: 0.3s;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cta-icon">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+        </svg>
+        Explorer le marche
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cta-arrow">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
     </a>
     
-    <div class="stats-row" style="animation-delay: 0.4s;">
+    <div class="stats-row fade-in" style="animation-delay: 0.4s;">
         <div class="mini-stat">
+            <div class="mini-stat-icon token-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="12" r="10"></circle>
+                </svg>
+            </div>
             <div class="mini-stat-value" id="tokensCount">0</div>
             <div class="mini-stat-label">Jetons restants</div>
         </div>
         <div class="mini-stat">
+            <div class="mini-stat-icon nego-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+            </div>
             <div class="mini-stat-value" id="negoCount">0</div>
-            <div class="mini-stat-label">Négociations actives</div>
+            <div class="mini-stat-label">Negociations actives</div>
         </div>
+    </div>
+    
+    <div class="quick-actions fade-in" style="animation-delay: 0.5s;">
+        <a href="/market" class="quick-action">
+            <div class="quick-action-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+            </div>
+            <span>Boutique</span>
+        </a>
+        <a href="/notifications" class="quick-action">
+            <div class="quick-action-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+            </div>
+            <span>Alertes</span>
+        </a>
+        <a href="/settings" class="quick-action">
+            <div class="quick-action-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </div>
+            <span>Reglages</span>
+        </a>
     </div>
 </div>
 
