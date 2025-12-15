@@ -8,3 +8,36 @@ wheels/
 
 # Virtual environments
 .venv
+.pythonlibs/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Logs
+logs/*.log
+
+# Uploads
+statics/uploads/*
+!statics/uploads/.gitkeep
+
+# Environment
+.env
+.env.local
+*.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cache
+.cache/
+*.cache
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
