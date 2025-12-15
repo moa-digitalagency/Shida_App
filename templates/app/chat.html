@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Shida - Chat{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-header">
+        <button class="back-btn" onclick="history.back()">←</button>
+        <div style="flex: 1;">
+            <div style="font-weight: 600;">Conversation</div>
+            <div style="font-size: 0.75rem; color: var(--text-gray);">En ligne</div>
+        </div>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    
+    <div class="chat-input-container">
+        <input type="text" class="chat-input" id="messageInput" placeholder="Votre message...">
+        <button class="send-btn" id="sendBtn">➤</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    await ShidaApp.init();
+    Chat.init({{ match_id }});
+});
+</script>
+{% endblock %}

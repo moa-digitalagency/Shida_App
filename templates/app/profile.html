@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Shida - Profil{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <img src="https://via.placeholder.com/150" alt="Profile" class="profile-avatar-large" id="profileAvatar">
+    
+    <div class="profile-user-name" id="profileName">
+        Chargement...
+    </div>
+    
+    <div class="dossier-section">
+        <div class="dossier-title">Mon Dossier</div>
+        <div class="dossier-items">
+            <div class="dossier-item">
+                <div class="dossier-icon">✝️</div>
+                <div class="dossier-label" id="profileReligion">-</div>
+            </div>
+            <div class="dossier-item">
+                <div class="dossier-icon">🍬</div>
+                <div class="dossier-label" id="profileTribe">-</div>
+            </div>
+            <div class="dossier-item">
+                <div class="dossier-icon">💼</div>
+                <div class="dossier-label" id="profileProfession">-</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="interest-tags">
+        <span class="interest-tag">Amitié</span>
+        <span class="interest-tag active">Construction</span>
+        <span class="interest-tag">Mariage</span>
+    </div>
+    
+    <a href="/negotiations" class="cta-button">
+        Ouvrir les négociations
+    </a>
+    
+    <div class="ghost-mode-toggle">
+        <div class="ghost-info">
+            <span class="ghost-icon">👻</span>
+            <div class="ghost-text">
+                <h4>Mode Fantôme 👻</h4>
+                <p>Voir sans être vu</p>
+            </div>
+        </div>
+        <label class="toggle-switch">
+            <input type="checkbox" id="ghostToggle" onchange="Profile.toggleGhostMode()">
+            <span class="toggle-slider"></span>
+        </label>
+    </div>
+    
+    <button onclick="ShidaApp.logout()" style="background: transparent; border: 1px solid var(--text-gray); color: var(--text-gray); padding: 12px 30px; border-radius: 10px; cursor: pointer; margin-top: 20px; width: 100%;">
+        Déconnexion
+    </button>
+</div>
+
+{% include "components/bottom_nav.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    await ShidaApp.init();
+    Profile.loadProfile();
+});
+</script>
+{% endblock %}

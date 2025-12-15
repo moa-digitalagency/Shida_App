@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Shida - Accueil{% endblock %}
+
+{% block content %}
+<div style="padding-top: 20px;">
+    <div class="logo-rings"></div>
+    <div class="logo-text">SHIDA</div>
+    <div class="tagline">Zala na Temps</div>
+    <p style="text-align: center; color: var(--text-gray); margin-top: 5px;">Bienvenue dans votre espace personnel.</p>
+    
+    <div class="stat-card" style="animation-delay: 0.1s;">
+        <div class="stat-title">Vues de votre dossier</div>
+        <div class="stat-value">
+            <span id="viewsCount">0</span>
+            <span class="stat-badge" id="viewsChange">↗ +0%</span>
+        </div>
+        <div style="color: var(--text-gray); font-size: 0.85rem;">cette semaine</div>
+        
+        <div class="chart-container">
+            <div class="chart-bar" style="height: 0%;"></div>
+            <div class="chart-bar" style="height: 0%;"></div>
+            <div class="chart-bar" style="height: 0%;"></div>
+            <div class="chart-bar" style="height: 0%;"></div>
+            <div class="chart-bar" style="height: 0%;"></div>
+            <div class="chart-bar" style="height: 0%;"></div>
+            <div class="chart-bar" style="height: 0%;"></div>
+        </div>
+        <div class="chart-labels">
+            <span class="chart-label">Lun</span>
+            <span class="chart-label">Mar</span>
+            <span class="chart-label">Mer</span>
+            <span class="chart-label">Jeu</span>
+            <span class="chart-label">Ven</span>
+            <span class="chart-label">Sam</span>
+            <span class="chart-label">Dim</span>
+        </div>
+    </div>
+    
+    <div class="vip-card" style="animation-delay: 0.2s;">
+        <div class="crown-icon">👑</div>
+        <div class="vip-title" id="vipType">VIP Gold</div>
+        <div class="vip-subtitle">Abonnement actif</div>
+        <span class="premium-badge">Premium</span>
+    </div>
+    
+    <a href="/discovery" class="cta-button" style="animation-delay: 0.3s;">
+        Explorer le marché →
+    </a>
+    
+    <div class="stats-row" style="animation-delay: 0.4s;">
+        <div class="mini-stat">
+            <div class="mini-stat-value" id="tokensCount">0</div>
+            <div class="mini-stat-label">Jetons restants</div>
+        </div>
+        <div class="mini-stat">
+            <div class="mini-stat-value" id="negoCount">0</div>
+            <div class="mini-stat-label">Négociations actives</div>
+        </div>
+    </div>
+</div>
+
+{% include "components/bottom_nav.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    await ShidaApp.init();
+    Dashboard.loadStats();
+});
+</script>
+{% endblock %}

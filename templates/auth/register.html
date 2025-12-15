@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Shida - Inscription{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="logo-rings"></div>
+    <div class="logo-text">SHIDA</div>
+    <div class="tagline">Zala na Temps</div>
+    
+    <form class="auth-form" id="registerForm">
+        <div class="form-group">
+            <input type="text" class="form-input" id="name" placeholder="Prénom" required>
+        </div>
+        <div class="form-group">
+            <input type="number" class="form-input" id="age" placeholder="Âge" min="18" max="99" required>
+        </div>
+        <div class="form-group">
+            <input type="email" class="form-input" id="email" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-input" id="password" placeholder="Mot de passe" required minlength="6">
+        </div>
+        <button type="submit" class="auth-button">Créer mon compte</button>
+    </form>
+    
+    <div class="auth-link">
+        Déjà un compte? <a href="/">Se connecter</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const age = document.getElementById('age').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    await ShidaApp.register(name, email, password, age);
+});
+</script>
+{% endblock %}
