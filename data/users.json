@@ -1,0 +1,192 @@
+[
+  {
+    "email": "demo@shida.com",
+    "password": "demo123",
+    "is_vip": true,
+    "vip_type": "Gold",
+    "tokens": 12,
+    "profile": {
+      "name": "Demo User",
+      "age": 28,
+      "bio": "Looking for meaningful connections",
+      "photo_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
+      "religion": "Chrétienne",
+      "tribe": "Gombe",
+      "profession": "Entrepreneur",
+      "objective": "Mariage",
+      "location": "Kinshasa",
+      "views_count": 34,
+      "weekly_views": [8, 5, 6, 7, 10, 12, 8],
+      "is_verified": true
+    }
+  },
+  {
+    "email": "nadia@shida.com",
+    "password": "password123",
+    "is_vip": false,
+    "vip_type": "free",
+    "tokens": 10,
+    "profile": {
+      "name": "Nadia",
+      "age": 27,
+      "bio": "Femme ambitieuse cherchant une relation sérieuse",
+      "photo_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400",
+      "religion": "Chrétienne",
+      "tribe": "Kinshasa",
+      "profession": "Médecin",
+      "objective": "Mariage & Sérieux",
+      "location": "Kinshasa",
+      "views_count": 56,
+      "weekly_views": [12, 8, 9, 11, 7, 5, 4],
+      "is_verified": true
+    }
+  },
+  {
+    "email": "naomie@shida.com",
+    "password": "password123",
+    "is_vip": true,
+    "vip_type": "Gold",
+    "tokens": 25,
+    "profile": {
+      "name": "Naomie",
+      "age": 25,
+      "bio": "Passionnée de musique et de voyages",
+      "photo_url": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400",
+      "religion": "Catholique",
+      "tribe": "Lubumbashi",
+      "profession": "Artiste",
+      "objective": "Mariage & Sérieux",
+      "location": "Lubumbashi",
+      "views_count": 89,
+      "weekly_views": [15, 12, 18, 14, 10, 12, 8],
+      "is_verified": true
+    }
+  },
+  {
+    "email": "sarah@shida.com",
+    "password": "password123",
+    "is_vip": false,
+    "vip_type": "free",
+    "tokens": 8,
+    "profile": {
+      "name": "Sarah",
+      "age": 28,
+      "bio": "Ingénieure en informatique, amoureuse des défis",
+      "photo_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400",
+      "religion": "Protestante",
+      "tribe": "Gombe",
+      "profession": "Ingénieur",
+      "objective": "Construction",
+      "location": "Kinshasa",
+      "views_count": 45,
+      "weekly_views": [6, 8, 7, 5, 9, 6, 4],
+      "is_verified": false
+    }
+  },
+  {
+    "email": "grace@shida.com",
+    "password": "password123",
+    "is_vip": false,
+    "vip_type": "free",
+    "tokens": 5,
+    "profile": {
+      "name": "Grace",
+      "age": 24,
+      "bio": "Étudiante en droit, passionnée de lecture",
+      "photo_url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400",
+      "religion": "Chrétienne",
+      "tribe": "Bukavu",
+      "profession": "Étudiant",
+      "objective": "Amitié",
+      "location": "Bukavu",
+      "views_count": 32,
+      "weekly_views": [4, 5, 6, 4, 5, 4, 4],
+      "is_verified": true
+    }
+  },
+  {
+    "email": "michelle@shida.com",
+    "password": "password123",
+    "is_vip": true,
+    "vip_type": "Platinum",
+    "tokens": 50,
+    "profile": {
+      "name": "Michelle",
+      "age": 26,
+      "bio": "Avocate spécialisée en droit des affaires",
+      "photo_url": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400",
+      "religion": "Catholique",
+      "tribe": "Kinshasa",
+      "profession": "Avocat",
+      "objective": "Mariage",
+      "location": "Kinshasa",
+      "views_count": 78,
+      "weekly_views": [10, 12, 14, 11, 13, 10, 8],
+      "is_verified": true
+    }
+  },
+  {
+    "email": "jessica@shida.com",
+    "password": "password123",
+    "is_vip": false,
+    "vip_type": "free",
+    "tokens": 15,
+    "profile": {
+      "name": "Jessica",
+      "age": 29,
+      "bio": "Entrepreneure dans le secteur de la mode",
+      "photo_url": "https://images.unsplash.com/photo-1488716820095-cbe80883c496?w=400",
+      "religion": "Chrétienne",
+      "tribe": "Gombe",
+      "profession": "Entrepreneur",
+      "objective": "Mariage & Sérieux",
+      "location": "Kinshasa",
+      "views_count": 67,
+      "weekly_views": [9, 11, 10, 8, 12, 9, 8],
+      "is_verified": true
+    }
+  },
+  {
+    "email": "claudine@shida.com",
+    "password": "password123",
+    "is_vip": false,
+    "vip_type": "free",
+    "tokens": 7,
+    "profile": {
+      "name": "Claudine",
+      "age": 23,
+      "bio": "Étudiante en médecine, rêveuse et optimiste",
+      "photo_url": "https://images.unsplash.com/photo-1502323777036-f29e3972f2e0?w=400",
+      "religion": "Protestante",
+      "tribe": "Lubumbashi",
+      "profession": "Étudiant",
+      "objective": "Amitié",
+      "location": "Lubumbashi",
+      "views_count": 28,
+      "weekly_views": [3, 4, 5, 4, 5, 4, 3],
+      "is_verified": false
+    }
+  },
+  {
+    "email": "team@shida.com",
+    "password": "shidateam2024",
+    "is_vip": true,
+    "vip_type": "Platinum",
+    "tokens": 999,
+    "is_system": true,
+    "profile": {
+      "name": "Équipe Shida",
+      "age": 0,
+      "bio": "Bienvenue sur Shida ! Nous sommes là pour vous aider.",
+      "photo_url": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400",
+      "religion": "",
+      "tribe": "",
+      "profession": "Support",
+      "objective": "",
+      "location": "Kinshasa",
+      "views_count": 0,
+      "weekly_views": [0, 0, 0, 0, 0, 0, 0],
+      "is_verified": true
+    }
+  }
+]

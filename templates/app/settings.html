@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Paramètres - Shida{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white pb-20">
+    <div class="p-4">
+        <h1 class="text-2xl font-bold text-pink-500 mb-6">PARAMÈTRES</h1>
+        
+        <div class="space-y-4">
+            <div class="bg-gray-800 rounded-xl p-4">
+                <h2 class="font-bold text-white mb-4 flex items-center">
+                    <i data-feather="user" class="w-5 h-5 mr-2"></i>
+                    Compte
+                </h2>
+                <div class="space-y-3">
+                    <a href="/profile" class="flex items-center justify-between py-2 text-gray-300 hover:text-white">
+                        <span>Modifier mon profil</span>
+                        <i data-feather="chevron-right" class="w-5 h-5"></i>
+                    </a>
+                    <div class="flex items-center justify-between py-2">
+                        <span class="text-gray-300">Mode Fantôme</span>
+                        <button id="ghost-toggle" onclick="toggleGhostMode()" class="w-12 h-6 rounded-full bg-gray-600 relative">
+                            <span id="ghost-indicator" class="absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800 rounded-xl p-4">
+                <h2 class="font-bold text-white mb-4 flex items-center">
+                    <i data-feather="credit-card" class="w-5 h-5 mr-2"></i>
+                    Abonnement
+                </h2>
+                <div id="subscription-info" class="text-gray-300">
+                    Chargement...
+                </div>
+                <a href="/market" class="block mt-4 text-center bg-pink-500 text-white py-2 rounded-lg font-bold">
+                    Gérer l'abonnement
+                </a>
+            </div>
+            
+            <div class="bg-gray-800 rounded-xl p-4">
+                <h2 class="font-bold text-white mb-4 flex items-center">
+                    <i data-feather="shield" class="w-5 h-5 mr-2"></i>
+                    Confidentialité
+                </h2>
+                <div class="space-y-3">
+                    <a href="/page/privacy" class="flex items-center justify-between py-2 text-gray-300 hover:text-white">
+                        <span>Politique de confidentialité</span>
+                        <i data-feather="chevron-right" class="w-5 h-5"></i>
+                    </a>
+                    <a href="/page/terms" class="flex items-center justify-between py-2 text-gray-300 hover:text-white">
+                        <span>Conditions d'utilisation</span>
+                        <i data-feather="chevron-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800 rounded-xl p-4">
+                <h2 class="font-bold text-white mb-4 flex items-center">
+                    <i data-feather="help-circle" class="w-5 h-5 mr-2"></i>
+                    Aide
+                </h2>
+                <div class="space-y-3">
+                    <a href="/page/help" class="flex items-center justify-between py-2 text-gray-300 hover:text-white">
+                        <span>Centre d'aide</span>
+                        <i data-feather="chevron-right" class="w-5 h-5"></i>
+                    </a>
+                    <a href="/page/safety" class="flex items-center justify-between py-2 text-gray-300 hover:text-white">
+                        <span>Conseils de sécurité</span>
+                        <i data-feather="chevron-right" class="w-5 h-5"></i>
+                    </a>
+                    <a href="/page/about" class="flex items-center justify-between py-2 text-gray-300 hover:text-white">
+                        <span>À propos de Shida</span>
+                        <i data-feather="chevron-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <button onclick="logout()" class="w-full bg-red-500 text-white py-3 rounded-xl font-bold">
+                Se déconnecter
+            </button>
+        </div>
+    </div>
+</div>
+
+{% include 'components/bottom_nav.html' %}
+
+<script>
+let currentUser = null;
+
+async function loadSettings() {
+    try {
+        const res = await fetch('/api/auth/me');
+        currentUser = await res.json();
+        
+        updateGhostToggle(currentUser.ghost_mode);
+        
+        const subRes = await fetch('/api/subscription');
+        const subscription = await subRes.json();
+        
+        const subInfo = document.getElementById('subscription-info');
+        if (subscription.active !== false && subscription.plan_type) {
+            subInfo.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span class="text-yellow-400 font-bold">${subscription.plan_type}</span>
+                    <span class="text-sm">Expire: ${new Date(subscription.expires_at).toLocaleDateString('fr-FR')}</span>
+                </div>
+            `;
+        } else {
+            subInfo.innerHTML = currentUser.is_vip ? 
+                `<span class="text-yellow-400 font-bold">VIP ${currentUser.vip_type}</span>` :
+                '<span class="text-gray-400">Aucun abonnement actif</span>';
+        }
+        
+        feather.replace();
+    } catch (error) {
+        console.error('Error loading settings:', error);
+    }
+}
+
+function updateGhostToggle(isActive) {
+    const toggle = document.getElementById('ghost-toggle');
+    const indicator = document.getElementById('ghost-indicator');
+    
+    if (isActive) {
+        toggle.classList.remove('bg-gray-600');
+        toggle.classList.add('bg-pink-500');
+        indicator.style.transform = 'translateX(24px)';
+    } else {
+        toggle.classList.add('bg-gray-600');
+        toggle.classList.remove('bg-pink-500');
+        indicator.style.transform = 'translateX(0)';
+    }
+}
+
+async function toggleGhostMode() {
+    try {
+        const res = await fetch('/api/profile/ghost-mode', { method: 'POST' });
+        const data = await res.json();
+        
+        if (res.ok) {
+            updateGhostToggle(data.ghost_mode);
+        } else {
+            alert(data.error || 'Fonctionnalité VIP requise');
+        }
+    } catch (error) {
+        console.error('Error toggling ghost mode:', error);
+    }
+}
+
+async function logout() {
+    try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+        window.location.href = '/';
+    } catch (error) {
+        console.error('Error logging out:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadSettings);
+</script>
+{% endblock %}

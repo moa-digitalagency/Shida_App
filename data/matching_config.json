@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Configuration Standard",
+    "religion_weight": 0.20,
+    "location_weight": 0.15,
+    "objective_weight": 0.35,
+    "profession_weight": 0.10,
+    "age_weight": 0.15,
+    "interests_weight": 0.05,
+    "is_active": true
+  },
+  {
+    "name": "Focus Objectifs",
+    "religion_weight": 0.10,
+    "location_weight": 0.10,
+    "objective_weight": 0.50,
+    "profession_weight": 0.10,
+    "age_weight": 0.10,
+    "interests_weight": 0.10,
+    "is_active": false
+  },
+  {
+    "name": "Focus Religion",
+    "religion_weight": 0.40,
+    "location_weight": 0.15,
+    "objective_weight": 0.25,
+    "profession_weight": 0.05,
+    "age_weight": 0.10,
+    "interests_weight": 0.05,
+    "is_active": false
+  }
+]

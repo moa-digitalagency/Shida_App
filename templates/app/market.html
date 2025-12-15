@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Marché - Shida{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white pb-20">
+    <div class="p-4">
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold text-pink-500">EXPLORER LE MARCHÉ</h1>
+            <div class="flex items-center bg-gray-800 rounded-full px-4 py-2">
+                <i data-feather="circle" class="w-5 h-5 text-yellow-400 mr-2"></i>
+                <span id="token-count" class="font-bold">0</span>
+            </div>
+        </div>
+        
+        <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl p-4 mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-black text-sm font-medium">CODE PROMO</p>
+                    <p class="text-black text-xs opacity-75">Entrez votre code pour des avantages</p>
+                </div>
+                <button onclick="showPromoModal()" class="bg-black text-yellow-500 px-4 py-2 rounded-lg font-bold">
+                    APPLIQUER
+                </button>
+            </div>
+        </div>
+        
+        <div class="mb-8">
+            <h2 class="text-xl font-bold mb-4 flex items-center">
+                <i data-feather="star" class="w-5 h-5 text-yellow-400 mr-2"></i>
+                Abonnements VIP
+            </h2>
+            <div id="subscription-plans" class="space-y-4">
+            </div>
+        </div>
+        
+        <div>
+            <h2 class="text-xl font-bold mb-4 flex items-center">
+                <i data-feather="circle" class="w-5 h-5 text-yellow-400 mr-2"></i>
+                Packs de Jetons
+            </h2>
+            <div id="token-plans" class="grid grid-cols-2 gap-4">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="promo-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-xl p-6 mx-4 w-full max-w-md">
+        <h3 class="text-xl font-bold text-white mb-4">Code Promo</h3>
+        <input type="text" id="promo-code" placeholder="Entrez votre code" 
+            class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-pink-500">
+        <div class="flex space-x-4">
+            <button onclick="hidePromoModal()" class="flex-1 bg-gray-600 text-white py-3 rounded-lg font-bold">
+                Annuler
+            </button>
+            <button onclick="applyPromo()" class="flex-1 bg-pink-500 text-white py-3 rounded-lg font-bold">
+                Appliquer
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="success-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-xl p-6 mx-4 w-full max-w-md text-center">
+        <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-feather="check" class="w-10 h-10 text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">Succès !</h3>
+        <p id="success-message" class="text-gray-400 mb-4"></p>
+        <button onclick="hideSuccessModal()" class="w-full bg-pink-500 text-white py-3 rounded-lg font-bold">
+            Continuer
+        </button>
+    </div>
+</div>
+
+{% include 'components/bottom_nav.html' %}
+
+<script>
+let currentUser = null;
+
+async function loadMarket() {
+    try {
+        const [userRes, plansRes] = await Promise.all([
+            fetch('/api/auth/me'),
+            fetch('/api/market/plans')
+        ]);
+        
+        currentUser = await userRes.json();
+        const plans = await plansRes.json();
+        
+        document.getElementById('token-count').textContent = currentUser.tokens || 0;
+        
+        const subscriptionPlans = plans.filter(p => p.plan_type === 'subscription');
+        const tokenPlans = plans.filter(p => p.plan_type === 'tokens');
+        
+        renderSubscriptionPlans(subscriptionPlans);
+        renderTokenPlans(tokenPlans);
+        
+        feather.replace();
+    } catch (error) {
+        console.error('Error loading market:', error);
+    }
+}
+
+function renderSubscriptionPlans(plans) {
+    const container = document.getElementById('subscription-plans');
+    container.innerHTML = plans.map(plan => `
+        <div class="bg-gradient-to-r ${plan.is_featured ? 'from-yellow-500 to-yellow-600' : 'from-gray-800 to-gray-700'} rounded-xl p-4 ${plan.is_featured ? 'border-2 border-yellow-400' : ''}">
+            <div class="flex justify-between items-start mb-3">
+                <div>
+                    <h3 class="font-bold ${plan.is_featured ? 'text-black' : 'text-white'}">${plan.name}</h3>
+                    <p class="text-2xl font-bold ${plan.is_featured ? 'text-black' : 'text-pink-500'}">$${plan.price}<span class="text-sm font-normal">/${plan.duration_days}j</span></p>
+                </div>
+                ${plan.is_featured ? '<span class="bg-black text-yellow-500 px-2 py-1 rounded text-xs font-bold">POPULAIRE</span>' : ''}
+            </div>
+            <ul class="space-y-2 mb-4">
+                ${(plan.features || []).map(f => `
+                    <li class="flex items-center text-sm ${plan.is_featured ? 'text-black' : 'text-gray-300'}">
+                        <i data-feather="check" class="w-4 h-4 mr-2 ${plan.is_featured ? 'text-black' : 'text-green-500'}"></i>
+                        ${f}
+                    </li>
+                `).join('')}
+            </ul>
+            <button onclick="purchasePlan(${plan.id})" class="w-full ${plan.is_featured ? 'bg-black text-yellow-500' : 'bg-pink-500 text-white'} py-3 rounded-lg font-bold">
+                S'abonner
+            </button>
+        </div>
+    `).join('');
+}
+
+function renderTokenPlans(plans) {
+    const container = document.getElementById('token-plans');
+    container.innerHTML = plans.map(plan => `
+        <div class="bg-gray-800 rounded-xl p-4 ${plan.is_featured ? 'border-2 border-pink-500' : ''}">
+            <div class="text-center mb-3">
+                <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <span class="text-black font-bold">${plan.tokens_included}</span>
+                </div>
+                <h3 class="font-bold text-white">${plan.name}</h3>
+                <p class="text-xl font-bold text-pink-500">$${plan.price}</p>
+            </div>
+            <button onclick="purchasePlan(${plan.id})" class="w-full bg-pink-500 text-white py-2 rounded-lg font-bold text-sm">
+                Acheter
+            </button>
+        </div>
+    `).join('');
+}
+
+async function purchasePlan(planId) {
+    try {
+        const res = await fetch('/api/market/purchase', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ plan_id: planId })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+            showSuccessModal(data.tokens_added ? 
+                `${data.tokens_added} jetons ajoutés à votre compte !` : 
+                `Abonnement ${data.vip_type} activé !`
+            );
+            loadMarket();
+        } else {
+            alert(data.error || 'Erreur lors de l\'achat');
+        }
+    } catch (error) {
+        console.error('Error purchasing plan:', error);
+        alert('Erreur de connexion');
+    }
+}
+
+function showPromoModal() {
+    document.getElementById('promo-modal').classList.remove('hidden');
+    document.getElementById('promo-modal').classList.add('flex');
+}
+
+function hidePromoModal() {
+    document.getElementById('promo-modal').classList.add('hidden');
+    document.getElementById('promo-modal').classList.remove('flex');
+    document.getElementById('promo-code').value = '';
+}
+
+async function applyPromo() {
+    const code = document.getElementById('promo-code').value.trim();
+    if (!code) return;
+    
+    try {
+        const res = await fetch('/api/market/promo', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ code })
+        });
+        
+        const data = await res.json();
+        hidePromoModal();
+        
+        if (res.ok) {
+            let message = 'Code promo appliqué !';
+            if (data.bonus_tokens) message = `${data.bonus_tokens} jetons bonus ajoutés !`;
+            if (data.trial_days) message = `Essai VIP de ${data.trial_days} jours activé !`;
+            if (data.discount_percent) message = `Réduction de ${data.discount_percent}% activée !`;
+            
+            showSuccessModal(message);
+            loadMarket();
+        } else {
+            alert(data.error || 'Code invalide');
+        }
+    } catch (error) {
+        console.error('Error applying promo:', error);
+        alert('Erreur de connexion');
+    }
+}
+
+function showSuccessModal(message) {
+    document.getElementById('success-message').textContent = message;
+    document.getElementById('success-modal').classList.remove('hidden');
+    document.getElementById('success-modal').classList.add('flex');
+    feather.replace();
+}
+
+function hideSuccessModal() {
+    document.getElementById('success-modal').classList.add('hidden');
+    document.getElementById('success-modal').classList.remove('flex');
+}
+
+document.addEventListener('DOMContentLoaded', loadMarket);
+</script>
+{% endblock %}

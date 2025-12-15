@@ -1,0 +1,52 @@
+[
+  {
+    "code": "BIENVENUE2024",
+    "discount_type": "percentage",
+    "discount_value": 20,
+    "max_uses": 1000,
+    "current_uses": 0,
+    "valid_from": "2024-01-01T00:00:00",
+    "valid_until": "2024-12-31T23:59:59",
+    "is_active": true
+  },
+  {
+    "code": "SHIDA50",
+    "discount_type": "percentage",
+    "discount_value": 50,
+    "max_uses": 100,
+    "current_uses": 0,
+    "valid_from": "2024-01-01T00:00:00",
+    "valid_until": "2024-06-30T23:59:59",
+    "is_active": true
+  },
+  {
+    "code": "NOEL2024",
+    "discount_type": "percentage",
+    "discount_value": 30,
+    "max_uses": 500,
+    "current_uses": 0,
+    "valid_from": "2024-12-01T00:00:00",
+    "valid_until": "2024-12-31T23:59:59",
+    "is_active": true
+  },
+  {
+    "code": "GRATUIT10",
+    "discount_type": "tokens",
+    "discount_value": 10,
+    "max_uses": 200,
+    "current_uses": 0,
+    "valid_from": "2024-01-01T00:00:00",
+    "valid_until": "2024-12-31T23:59:59",
+    "is_active": true
+  },
+  {
+    "code": "VIP1MOIS",
+    "discount_type": "trial",
+    "discount_value": 30,
+    "max_uses": 50,
+    "current_uses": 0,
+    "valid_from": "2024-01-01T00:00:00",
+    "valid_until": "2024-12-31T23:59:59",
+    "is_active": true
+  }
+]

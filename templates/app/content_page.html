@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }} - Shida{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white pb-20">
+    <div class="p-4">
+        <div class="flex items-center mb-6">
+            <a href="javascript:history.back()" class="mr-4">
+                <i data-feather="arrow-left" class="w-6 h-6 text-white"></i>
+            </a>
+            <h1 class="text-xl font-bold text-white">{{ page.title }}</h1>
+        </div>
+        
+        <div class="prose prose-invert max-w-none">
+            {{ page.content | safe }}
+        </div>
+    </div>
+</div>
+
+{% include 'components/bottom_nav.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    feather.replace();
+    
+    const content = document.querySelector('.prose');
+    if (content) {
+        content.innerHTML = content.innerHTML
+            .replace(/^# (.*?)$/gm, '<h1 class="text-2xl font-bold text-pink-500 mb-4">$1</h1>')
+            .replace(/^## (.*?)$/gm, '<h2 class="text-xl font-bold text-white mt-6 mb-3">$1</h2>')
+            .replace(/^### (.*?)$/gm, '<h3 class="text-lg font-bold text-white mt-4 mb-2">$1</h3>')
+            .replace(/^\- \*\*(.*?)\*\*: (.*?)$/gm, '<li class="mb-2"><strong class="text-pink-400">$1</strong>: $2</li>')
+            .replace(/^\- (.*?)$/gm, '<li class="mb-2 text-gray-300">$1</li>')
+            .replace(/\n\n/g, '</p><p class="text-gray-300 mb-4">');
+    }
+});
+</script>
+{% endblock %}

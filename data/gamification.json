@@ -1,0 +1,122 @@
+{
+  "badges": [
+    {
+      "id": "verified",
+      "name": "Profil Vérifié",
+      "description": "A vérifié son identité",
+      "icon": "check-circle",
+      "color": "#FFD700"
+    },
+    {
+      "id": "vip_gold",
+      "name": "VIP Gold",
+      "description": "Membre VIP Gold actif",
+      "icon": "star",
+      "color": "#FFD700"
+    },
+    {
+      "id": "vip_platinum",
+      "name": "VIP Platinum",
+      "description": "Membre VIP Platinum actif",
+      "icon": "diamond",
+      "color": "#E5E4E2"
+    },
+    {
+      "id": "popular",
+      "name": "Populaire",
+      "description": "Plus de 100 vues de profil",
+      "icon": "trending-up",
+      "color": "#FF6B6B"
+    },
+    {
+      "id": "match_master",
+      "name": "Maître des Matchs",
+      "description": "10+ matchs réussis",
+      "icon": "heart",
+      "color": "#FF1493"
+    },
+    {
+      "id": "active_user",
+      "name": "Utilisateur Actif",
+      "description": "Connecté 7 jours consécutifs",
+      "icon": "activity",
+      "color": "#4CAF50"
+    },
+    {
+      "id": "early_adopter",
+      "name": "Pionnier",
+      "description": "Parmi les premiers utilisateurs",
+      "icon": "award",
+      "color": "#9C27B0"
+    },
+    {
+      "id": "profile_complete",
+      "name": "Profil Complet",
+      "description": "A complété 100% de son profil",
+      "icon": "user-check",
+      "color": "#2196F3"
+    }
+  ],
+  "achievements": [
+    {
+      "id": "first_match",
+      "name": "Premier Match",
+      "description": "Obtenez votre premier match",
+      "reward_tokens": 2,
+      "requirement": {"type": "matches", "count": 1}
+    },
+    {
+      "id": "five_matches",
+      "name": "Populaire",
+      "description": "Obtenez 5 matchs",
+      "reward_tokens": 5,
+      "requirement": {"type": "matches", "count": 5}
+    },
+    {
+      "id": "first_message",
+      "name": "Première Conversation",
+      "description": "Envoyez votre premier message",
+      "reward_tokens": 1,
+      "requirement": {"type": "messages_sent", "count": 1}
+    },
+    {
+      "id": "profile_complete",
+      "name": "Profil Parfait",
+      "description": "Complétez votre profil à 100%",
+      "reward_tokens": 3,
+      "requirement": {"type": "profile_completion", "percentage": 100}
+    },
+    {
+      "id": "verified_profile",
+      "name": "Identité Vérifiée",
+      "description": "Faites vérifier votre profil",
+      "reward_tokens": 5,
+      "requirement": {"type": "verification", "status": true}
+    },
+    {
+      "id": "week_streak",
+      "name": "Fidèle",
+      "description": "Connectez-vous 7 jours de suite",
+      "reward_tokens": 3,
+      "requirement": {"type": "login_streak", "days": 7}
+    }
+  ],
+  "levels": [
+    {"level": 1, "name": "Nouveau", "min_xp": 0, "color": "#9E9E9E"},
+    {"level": 2, "name": "Actif", "min_xp": 100, "color": "#4CAF50"},
+    {"level": 3, "name": "Régulier", "min_xp": 300, "color": "#2196F3"},
+    {"level": 4, "name": "Populaire", "min_xp": 600, "color": "#9C27B0"},
+    {"level": 5, "name": "Star", "min_xp": 1000, "color": "#FF9800"},
+    {"level": 6, "name": "Légende", "min_xp": 2000, "color": "#FFD700"}
+  ],
+  "xp_rewards": {
+    "daily_login": 10,
+    "profile_view": 1,
+    "swipe": 1,
+    "match": 25,
+    "message_sent": 5,
+    "message_received": 2,
+    "profile_complete": 50,
+    "verification": 100
+  }
+}

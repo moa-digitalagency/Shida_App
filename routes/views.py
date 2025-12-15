@@ -11,6 +11,8 @@ def index():
 
 @views.route('/register')
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('views.home'))
     return render_template('auth/register.html')
 
 @views.route('/home')
@@ -37,3 +39,24 @@ def chat(match_id):
 @login_required
 def profile():
     return render_template('app/profile.html')
+
+@views.route('/market')
+@login_required
+def market():
+    return render_template('app/market.html')
+
+@views.route('/notifications')
+@login_required
+def notifications():
+    return render_template('app/notifications.html')
+
+@views.route('/settings')
+@login_required
+def settings():
+    return render_template('app/settings.html')
+
+@views.route('/page/<slug>')
+def content_page(slug):
+    from models import ContentPage
+    page = ContentPage.query.filter_by(slug=slug, is_published=True).first_or_404()
+    return render_template('app/content_page.html', page=page)

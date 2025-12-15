@@ -1,0 +1,90 @@
+[
+  {
+    "name": "Pack Débutant",
+    "plan_type": "tokens",
+    "price": 2.99,
+    "currency": "USD",
+    "duration_days": null,
+    "tokens_included": 10,
+    "features": ["10 jetons", "Valable sans expiration", "Utilisable pour saluer vos matchs"],
+    "is_active": true,
+    "is_featured": false
+  },
+  {
+    "name": "Pack Standard",
+    "plan_type": "tokens",
+    "price": 7.99,
+    "currency": "USD",
+    "duration_days": null,
+    "tokens_included": 30,
+    "features": ["30 jetons", "Économisez 20%", "Valable sans expiration"],
+    "is_active": true,
+    "is_featured": true
+  },
+  {
+    "name": "Pack Premium",
+    "plan_type": "tokens",
+    "price": 14.99,
+    "currency": "USD",
+    "duration_days": null,
+    "tokens_included": 75,
+    "features": ["75 jetons", "Économisez 35%", "Valable sans expiration", "Badge exclusif"],
+    "is_active": true,
+    "is_featured": false
+  },
+  {
+    "name": "Pack VIP",
+    "plan_type": "tokens",
+    "price": 29.99,
+    "currency": "USD",
+    "duration_days": null,
+    "tokens_included": 200,
+    "features": ["200 jetons", "Économisez 50%", "Valable sans expiration", "Badge VIP", "Support prioritaire"],
+    "is_active": true,
+    "is_featured": false
+  },
+  {
+    "name": "VIP Gold - Mensuel",
+    "plan_type": "subscription",
+    "price": 9.99,
+    "currency": "USD",
+    "duration_days": 30,
+    "tokens_included": 30,
+    "features": ["30 jetons/mois", "Mode Fantôme", "Voir qui vous a liké", "Swipes illimités", "Badge Gold"],
+    "is_active": true,
+    "is_featured": true
+  },
+  {
+    "name": "VIP Gold - Trimestriel",
+    "plan_type": "subscription",
+    "price": 24.99,
+    "currency": "USD",
+    "duration_days": 90,
+    "tokens_included": 100,
+    "features": ["100 jetons", "Mode Fantôme", "Voir qui vous a liké", "Swipes illimités", "Badge Gold", "Économisez 17%"],
+    "is_active": true,
+    "is_featured": false
+  },
+  {
+    "name": "VIP Platinum - Mensuel",
+    "plan_type": "subscription",
+    "price": 19.99,
+    "currency": "USD",
+    "duration_days": 30,
+    "tokens_included": 100,
+    "features": ["100 jetons/mois", "Mode Fantôme", "Voir qui vous a liké", "Swipes illimités", "Badge Platinum", "Support prioritaire", "Boost de profil hebdomadaire"],
+    "is_active": true,
+    "is_featured": false
+  },
+  {
+    "name": "VIP Platinum - Annuel",
+    "plan_type": "subscription",
+    "price": 149.99,
+    "currency": "USD",
+    "duration_days": 365,
+    "tokens_included": 1500,
+    "features": ["1500 jetons", "Toutes les fonctionnalités Platinum", "Économisez 40%", "Accès anticipé aux nouvelles fonctionnalités"],
+    "is_active": true,
+    "is_featured": false
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "type": "welcome",
+    "title": "Bienvenue sur Shida !",
+    "message": "Votre compte a été créé avec succès. Commencez à découvrir des profils compatibles."
+  },
+  {
+    "type": "new_match",
+    "title": "Affaire Conclue !",
+    "message": "Vous avez un nouveau match avec {name} ! Vous avez les mêmes objectifs."
+  },
+  {
+    "type": "new_message",
+    "title": "Nouveau Message",
+    "message": "{name} vous a envoyé un message."
+  },
+  {
+    "type": "profile_view",
+    "title": "Quelqu'un a vu votre profil",
+    "message": "Votre profil a été consulté. Passez en VIP pour voir qui."
+  },
+  {
+    "type": "like_received",
+    "title": "Quelqu'un vous a liké !",
+    "message": "Vous avez reçu un nouveau like. Passez en VIP pour le découvrir."
+  },
+  {
+    "type": "tokens_low",
+    "title": "Jetons faibles",
+    "message": "Il ne vous reste que {tokens} jeton(s). Rechargez pour continuer à faire des rencontres."
+  },
+  {
+    "type": "vip_expiring",
+    "title": "Abonnement VIP",
+    "message": "Votre abonnement VIP expire dans {days} jours. Renouvelez pour garder vos avantages."
+  },
+  {
+    "type": "verification_approved",
+    "title": "Profil Vérifié !",
+    "message": "Félicitations ! Votre profil a été vérifié. Vous avez maintenant le badge de vérification."
+  },
+  {
+    "type": "verification_rejected",
+    "title": "Vérification Refusée",
+    "message": "Votre demande de vérification a été refusée. Veuillez soumettre une nouvelle photo."
+  },
+  {
+    "type": "weekly_summary",
+    "title": "Résumé de la Semaine",
+    "message": "Cette semaine : {views} vues de profil, {matches} nouveaux matchs. Continuez à briller !"
+  }
+]

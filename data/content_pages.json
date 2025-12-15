@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "about",
+    "title": "À propos de Shida",
+    "content": "# À propos de Shida\n\nShida est la première application de rencontre pensée pour la communauté congolaise. Notre mission est de créer des connexions authentiques et significatives.\n\n## Notre Vision\n\nNous croyons que chaque personne mérite de trouver l'amour et l'amitié de manière respectueuse et sécurisée.\n\n## Nos Valeurs\n\n- **Authenticité** : Profils vérifiés et intentions claires\n- **Respect** : Une communauté bienveillante\n- **Sécurité** : Protection de vos données\n- **Innovation** : Technologie au service des relations humaines",
+    "is_published": true
+  },
+  {
+    "slug": "privacy",
+    "title": "Politique de Confidentialité",
+    "content": "# Politique de Confidentialité\n\n## Collecte des Données\n\nNous collectons uniquement les informations nécessaires au fonctionnement du service.\n\n## Utilisation des Données\n\nVos données sont utilisées pour :\n- Améliorer notre algorithme de matching\n- Personnaliser votre expérience\n- Assurer la sécurité de la plateforme\n\n## Protection des Données\n\nVos données sont cryptées et stockées de manière sécurisée.\n\n## Vos Droits\n\nVous avez le droit d'accéder, modifier ou supprimer vos données à tout moment.",
+    "is_published": true
+  },
+  {
+    "slug": "terms",
+    "title": "Conditions d'Utilisation",
+    "content": "# Conditions d'Utilisation\n\n## Acceptation des Conditions\n\nEn utilisant Shida, vous acceptez ces conditions.\n\n## Règles de la Communauté\n\n- Respectez les autres utilisateurs\n- Pas de contenu inapproprié\n- Pas de harcèlement\n- Utilisez des photos authentiques\n\n## Compte Utilisateur\n\n- Vous devez avoir 18 ans ou plus\n- Une seule compte par personne\n- Informations véridiques requises\n\n## Monétisation\n\n- Les jetons achetés ne sont pas remboursables\n- Les abonnements se renouvellent automatiquement",
+    "is_published": true
+  },
+  {
+    "slug": "help",
+    "title": "Centre d'Aide",
+    "content": "# Centre d'Aide\n\n## Questions Fréquentes\n\n### Comment fonctionne le système de jetons ?\nLes jetons vous permettent d'initier des conversations avec vos matchs. Chaque salutation coûte 1 jeton.\n\n### Comment devenir VIP ?\nAccédez au Marché et choisissez l'abonnement qui vous convient.\n\n### Comment signaler un utilisateur ?\nCliquez sur le menu du profil et sélectionnez 'Signaler'.\n\n### Comment supprimer mon compte ?\nAccédez aux paramètres de votre profil et cliquez sur 'Supprimer mon compte'.\n\n## Contact\n\nPour toute question, contactez-nous à support@shida.com",
+    "is_published": true
+  },
+  {
+    "slug": "safety",
+    "title": "Conseils de Sécurité",
+    "content": "# Conseils de Sécurité\n\n## Protégez-vous\n\n- Ne partagez jamais d'informations financières\n- Méfiez-vous des demandes d'argent\n- Rencontrez-vous dans des lieux publics\n- Informez un proche de vos rendez-vous\n\n## Signalez les Comportements Suspects\n\n- Profils frauduleux\n- Harcèlement\n- Contenu inapproprié\n- Arnaques\n\n## Vérification de Profil\n\nNous encourageons tous les utilisateurs à vérifier leur profil pour une communauté plus sûre.",
+    "is_published": true
+  }
+]
