@@ -1,0 +1,205 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Monétisation - Shida Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold">Monétisation</h1>
+    <p class="text-gray-400">Gestion des abonnements, tokens et promotions</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-green-400">${{ "%.2f"|format(stats.revenue_month) }}</p>
+        <p class="text-gray-400 text-sm">Revenus (30j)</p>
+    </div>
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-yellow-400">{{ stats.subscriptions_active }}</p>
+        <p class="text-gray-400 text-sm">Abonnements actifs</p>
+    </div>
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-blue-400">{{ stats.tokens_sold_month or 0 }}</p>
+        <p class="text-gray-400 text-sm">Tokens vendus (30j)</p>
+    </div>
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-pink-400">${{ "%.2f"|format(stats.avg_transaction) }}</p>
+        <p class="text-gray-400 text-sm">Transaction moyenne</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="bg-gray-800 rounded-xl p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-semibold">Plans d'abonnement</h3>
+            <button onclick="document.getElementById('planModal').classList.remove('hidden')" 
+                    class="bg-shida-pink hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm">
+                + Nouveau plan
+            </button>
+        </div>
+        
+        <div class="space-y-4">
+            {% for plan in plans %}
+            <div class="bg-gray-700 rounded-lg p-4 {% if plan.is_featured %}border-2 border-shida-gold{% endif %}">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h4 class="font-medium flex items-center gap-2">
+                            {{ plan.name }}
+                            {% if plan.is_featured %}
+                            <span class="bg-shida-gold text-black text-xs px-2 py-0.5 rounded">Featured</span>
+                            {% endif %}
+                        </h4>
+                        <p class="text-gray-400 text-sm">{{ plan.plan_type }} • {{ plan.duration_days or 'N/A' }} jours</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xl font-bold text-green-400">${{ plan.price }}</p>
+                        <span class="text-xs {% if plan.is_active %}text-green-400{% else %}text-red-400{% endif %}">
+                            {{ 'Actif' if plan.is_active else 'Inactif' }}
+                        </span>
+                    </div>
+                </div>
+                {% if plan.tokens_included %}
+                <p class="text-sm text-shida-gold mt-2">+{{ plan.tokens_included }} tokens inclus</p>
+                {% endif %}
+            </div>
+            {% else %}
+            <p class="text-gray-400 text-center py-8">Aucun plan configuré</p>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="bg-gray-800 rounded-xl p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-semibold">Codes promo</h3>
+            <button onclick="document.getElementById('promoModal').classList.remove('hidden')" 
+                    class="bg-shida-pink hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm">
+                + Nouveau code
+            </button>
+        </div>
+        
+        <div class="space-y-3">
+            {% for promo in promos %}
+            <div class="bg-gray-700 rounded-lg p-4 flex justify-between items-center">
+                <div>
+                    <p class="font-mono font-bold text-shida-gold">{{ promo.code }}</p>
+                    <p class="text-gray-400 text-sm">
+                        {% if promo.discount_type == 'percent' %}
+                        {{ promo.discount_value }}% de réduction
+                        {% else %}
+                        ${{ promo.discount_value }} de réduction
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm">{{ promo.current_uses }}/{{ promo.max_uses or '∞' }} utilisations</p>
+                    <span class="text-xs {% if promo.is_active %}text-green-400{% else %}text-red-400{% endif %}">
+                        {{ 'Actif' if promo.is_active else 'Inactif' }}
+                    </span>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-gray-400 text-center py-8">Aucun code promo</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="bg-gray-800 rounded-xl p-6">
+    <h3 class="text-lg font-semibold mb-6">Transactions récentes</h3>
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-700">
+                <tr>
+                    <th class="text-left px-4 py-3">Utilisateur</th>
+                    <th class="text-left px-4 py-3">Plan</th>
+                    <th class="text-left px-4 py-3">Montant</th>
+                    <th class="text-left px-4 py-3">Statut</th>
+                    <th class="text-left px-4 py-3">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tx in recent_transactions %}
+                <tr class="border-t border-gray-700">
+                    <td class="px-4 py-3">{{ tx.user.profile.name if tx.user.profile else tx.user.email }}</td>
+                    <td class="px-4 py-3">{{ tx.plan_type }}</td>
+                    <td class="px-4 py-3 text-green-400">${{ tx.price }}</td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-1 rounded text-xs {% if tx.status == 'active' %}bg-green-500/20 text-green-400{% else %}bg-gray-500/20 text-gray-400{% endif %}">
+                            {{ tx.status }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-gray-400">{{ tx.created_at.strftime('%d/%m/%Y') }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="px-4 py-8 text-center text-gray-400">Aucune transaction</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="planModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4">
+        <h3 class="text-xl font-bold mb-4">Nouveau plan</h3>
+        <form method="POST" action="{{ url_for('admin.save_plan') }}" class="space-y-4">
+            <input type="text" name="name" placeholder="Nom du plan" required
+                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+            <select name="plan_type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+                <option value="subscription">Abonnement</option>
+                <option value="tokens">Pack de tokens</option>
+            </select>
+            <input type="number" name="price" placeholder="Prix ($)" step="0.01" required
+                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+            <input type="number" name="duration_days" placeholder="Durée (jours)"
+                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+            <input type="number" name="tokens_included" placeholder="Tokens inclus"
+                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+            <div class="flex gap-2">
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" name="is_active" checked class="accent-shida-pink">
+                    <span>Actif</span>
+                </label>
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" name="is_featured" class="accent-shida-gold">
+                    <span>Featured</span>
+                </label>
+            </div>
+            <div class="flex gap-3">
+                <button type="button" onclick="document.getElementById('planModal').classList.add('hidden')"
+                        class="flex-1 bg-gray-600 hover:bg-gray-500 text-white py-2 rounded-lg">Annuler</button>
+                <button type="submit" class="flex-1 bg-shida-pink hover:bg-pink-600 text-white py-2 rounded-lg">Créer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="promoModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4">
+        <h3 class="text-xl font-bold mb-4">Nouveau code promo</h3>
+        <form method="POST" action="{{ url_for('admin.save_promo') }}" class="space-y-4">
+            <input type="text" name="code" placeholder="CODE (ex: SUMMER20)" required
+                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white uppercase">
+            <select name="discount_type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+                <option value="percent">Pourcentage (%)</option>
+                <option value="fixed">Montant fixe ($)</option>
+            </select>
+            <input type="number" name="discount_value" placeholder="Valeur de réduction" step="0.01" required
+                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+            <input type="number" name="max_uses" placeholder="Nombre max d'utilisations (laisser vide = illimité)"
+                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+            <div class="grid grid-cols-2 gap-3">
+                <input type="date" name="valid_from" placeholder="Valide à partir de"
+                       class="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+                <input type="date" name="valid_until" placeholder="Valide jusqu'au"
+                       class="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+            </div>
+            <div class="flex gap-3">
+                <button type="button" onclick="document.getElementById('promoModal').classList.add('hidden')"
+                        class="flex-1 bg-gray-600 hover:bg-gray-500 text-white py-2 rounded-lg">Annuler</button>
+                <button type="submit" class="flex-1 bg-shida-pink hover:bg-pink-600 text-white py-2 rounded-lg">Créer</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

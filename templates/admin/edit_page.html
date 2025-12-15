@@ -1,0 +1,80 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}{% if page %}Modifier{% else %}Nouvelle{% endif %} page - Shida Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <a href="{{ url_for('admin.content') }}" class="text-gray-400 hover:text-white flex items-center gap-2 mb-4">
+        <i data-feather="arrow-left" class="w-4 h-4"></i> Retour au contenu
+    </a>
+    <h1 class="text-3xl font-bold">{% if page %}Modifier la page{% else %}Nouvelle page{% endif %}</h1>
+</div>
+
+<form method="POST" class="space-y-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-gray-800 rounded-xl p-6">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Titre</label>
+                        <input type="text" name="title" value="{{ page.title if page else '' }}" required
+                               placeholder="Titre de la page"
+                               class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white text-lg">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Slug (URL)</label>
+                        <div class="flex items-center gap-2">
+                            <span class="text-gray-500">/</span>
+                            <input type="text" name="slug" value="{{ page.slug if page else '' }}" required
+                                   placeholder="url-de-la-page"
+                                   pattern="[a-z0-9\-]+"
+                                   class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white font-mono">
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Lettres minuscules, chiffres et tirets uniquement</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Contenu</label>
+                        <textarea name="content" rows="20"
+                                  placeholder="Contenu de la page (HTML supporté)..."
+                                  class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white font-mono text-sm">{{ page.content if page else '' }}</textarea>
+                        <p class="text-xs text-gray-500 mt-1">Vous pouvez utiliser du HTML pour la mise en forme</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="lg:col-span-1">
+            <div class="bg-gray-800 rounded-xl p-6 sticky top-8">
+                <h3 class="font-semibold mb-4">Publication</h3>
+                
+                <div class="space-y-4">
+                    <label class="flex items-center gap-3">
+                        <input type="checkbox" name="is_published" {% if not page or page.is_published %}checked{% endif %}
+                               class="w-5 h-5 accent-shida-pink">
+                        <span>Publier cette page</span>
+                    </label>
+                    
+                    {% if page %}
+                    <div class="text-sm text-gray-400 space-y-1">
+                        <p>Créée: {{ page.created_at.strftime('%d/%m/%Y') if page.created_at else 'N/A' }}</p>
+                        <p>Modifiée: {{ page.updated_at.strftime('%d/%m/%Y %H:%M') if page.updated_at else 'N/A' }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <button type="submit" class="w-full bg-shida-pink hover:bg-pink-600 text-white py-3 rounded-lg transition">
+                        {% if page %}Enregistrer{% else %}Créer la page{% endif %}
+                    </button>
+                    
+                    {% if page %}
+                    <a href="/{{ page.slug }}" target="_blank" class="block text-center text-shida-pink hover:underline">
+                        Voir la page
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

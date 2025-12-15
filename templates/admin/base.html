@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin - Shida{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'shida-pink': '#ff1493',
+                        'shida-gold': '#ffd700',
+                        'shida-dark': '#111827',
+                        'shida-card': '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar-link.active { background-color: rgba(255, 20, 147, 0.2); border-left: 3px solid #ff1493; }
+        .sidebar-link:hover { background-color: rgba(255, 20, 147, 0.1); }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="flex">
+        <aside class="w-64 bg-gray-800 min-h-screen fixed left-0 top-0 overflow-y-auto">
+            <div class="p-4 border-b border-gray-700">
+                <h1 class="text-2xl font-bold text-shida-pink flex items-center gap-2">
+                    <span>💍</span> Shida Admin
+                </h1>
+            </div>
+            
+            <nav class="p-4 space-y-2">
+                <a href="{{ url_for('admin.dashboard') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg transition {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
+                    <i data-feather="home" class="w-5 h-5"></i>
+                    <span>Tableau de bord</span>
+                </a>
+                
+                <a href="{{ url_for('admin.users') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg transition {% if 'users' in request.endpoint %}active{% endif %}">
+                    <i data-feather="users" class="w-5 h-5"></i>
+                    <span>Utilisateurs</span>
+                </a>
+                
+                <a href="{{ url_for('admin.moderation') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg transition {% if 'moderation' in request.endpoint or 'report' in request.endpoint %}active{% endif %}">
+                    <i data-feather="shield" class="w-5 h-5"></i>
+                    <span>Modération</span>
+                </a>
+                
+                <a href="{{ url_for('admin.matching') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg transition {% if 'matching' in request.endpoint %}active{% endif %}">
+                    <i data-feather="heart" class="w-5 h-5"></i>
+                    <span>Algorithme</span>
+                </a>
+                
+                <a href="{{ url_for('admin.analytics') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg transition {% if 'analytics' in request.endpoint %}active{% endif %}">
+                    <i data-feather="bar-chart-2" class="w-5 h-5"></i>
+                    <span>Analytiques</span>
+                </a>
+                
+                <a href="{{ url_for('admin.monetization') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg transition {% if 'monetization' in request.endpoint %}active{% endif %}">
+                    <i data-feather="credit-card" class="w-5 h-5"></i>
+                    <span>Monétisation</span>
+                </a>
+                
+                <a href="{{ url_for('admin.notifications') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg transition {% if 'notifications' in request.endpoint %}active{% endif %}">
+                    <i data-feather="bell" class="w-5 h-5"></i>
+                    <span>Notifications</span>
+                </a>
+                
+                <a href="{{ url_for('admin.content') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg transition {% if 'content' in request.endpoint or 'page' in request.endpoint %}active{% endif %}">
+                    <i data-feather="file-text" class="w-5 h-5"></i>
+                    <span>Contenu</span>
+                </a>
+                
+                <a href="{{ url_for('admin.support') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg transition {% if 'support' in request.endpoint or 'ticket' in request.endpoint %}active{% endif %}">
+                    <i data-feather="message-circle" class="w-5 h-5"></i>
+                    <span>Support</span>
+                </a>
+                
+                {% if admin_user and admin_user.role == 'super_admin' %}
+                <a href="{{ url_for('admin.security') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg transition {% if 'security' in request.endpoint %}active{% endif %}">
+                    <i data-feather="lock" class="w-5 h-5"></i>
+                    <span>Sécurité</span>
+                </a>
+                {% endif %}
+            </nav>
+            
+            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-700">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-shida-pink flex items-center justify-center">
+                        {{ admin_user.name[0] if admin_user else 'A' }}
+                    </div>
+                    <div>
+                        <p class="font-medium">{{ admin_user.name if admin_user else 'Admin' }}</p>
+                        <p class="text-xs text-gray-400">{{ admin_user.role if admin_user else '' }}</p>
+                    </div>
+                </div>
+                <a href="{{ url_for('admin.logout') }}" class="flex items-center gap-2 text-gray-400 hover:text-white transition">
+                    <i data-feather="log-out" class="w-4 h-4"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
+        
+        <main class="ml-64 flex-1 p-8">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    
+    <script>feather.replace()</script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

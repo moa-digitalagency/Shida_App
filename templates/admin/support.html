@@ -1,0 +1,107 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Support - Shida Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold">Support Client</h1>
+    <p class="text-gray-400">Gestion des tickets de support</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-yellow-400">{{ stats.open }}</p>
+        <p class="text-gray-400 text-sm">Ouverts</p>
+    </div>
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-blue-400">{{ stats.in_progress }}</p>
+        <p class="text-gray-400 text-sm">En cours</p>
+    </div>
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-green-400">{{ stats.resolved }}</p>
+        <p class="text-gray-400 text-sm">Résolus</p>
+    </div>
+</div>
+
+<div class="bg-gray-800 rounded-xl p-4 mb-6">
+    <form method="GET" class="flex gap-4">
+        <select name="status" class="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+            <option value="all" {% if request.args.get('status', 'all') == 'all' %}selected{% endif %}>Tous</option>
+            <option value="open" {% if request.args.get('status') == 'open' %}selected{% endif %}>Ouverts</option>
+            <option value="in_progress" {% if request.args.get('status') == 'in_progress' %}selected{% endif %}>En cours</option>
+            <option value="resolved" {% if request.args.get('status') == 'resolved' %}selected{% endif %}>Résolus</option>
+        </select>
+        <button type="submit" class="bg-shida-pink hover:bg-pink-600 text-white px-6 py-2 rounded-lg">
+            Filtrer
+        </button>
+    </form>
+</div>
+
+<div class="bg-gray-800 rounded-xl overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-700">
+            <tr>
+                <th class="text-left px-6 py-4">#</th>
+                <th class="text-left px-6 py-4">Sujet</th>
+                <th class="text-left px-6 py-4">Utilisateur</th>
+                <th class="text-left px-6 py-4">Catégorie</th>
+                <th class="text-left px-6 py-4">Priorité</th>
+                <th class="text-left px-6 py-4">Statut</th>
+                <th class="text-left px-6 py-4">Date</th>
+                <th class="text-left px-6 py-4">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in tickets.items %}
+            <tr class="border-t border-gray-700 hover:bg-gray-700/50">
+                <td class="px-6 py-4 text-gray-400">#{{ ticket.id }}</td>
+                <td class="px-6 py-4 font-medium">{{ ticket.subject[:40] }}{% if ticket.subject|length > 40 %}...{% endif %}</td>
+                <td class="px-6 py-4 text-gray-400">
+                    {{ ticket.user.profile.name if ticket.user.profile else ticket.user.email }}
+                </td>
+                <td class="px-6 py-4">
+                    <span class="px-2 py-1 bg-gray-600 rounded text-xs">{{ ticket.category }}</span>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="px-2 py-1 rounded text-xs {% if ticket.priority == 'high' %}bg-red-500/20 text-red-400{% elif ticket.priority == 'medium' %}bg-yellow-500/20 text-yellow-400{% else %}bg-gray-500/20 text-gray-400{% endif %}">
+                        {{ ticket.priority }}
+                    </span>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="px-2 py-1 rounded text-xs {% if ticket.status == 'resolved' %}bg-green-500/20 text-green-400{% elif ticket.status == 'in_progress' %}bg-blue-500/20 text-blue-400{% else %}bg-yellow-500/20 text-yellow-400{% endif %}">
+                        {{ ticket.status }}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-gray-400">{{ ticket.created_at.strftime('%d/%m/%Y') }}</td>
+                <td class="px-6 py-4">
+                    <a href="{{ url_for('admin.ticket_detail', ticket_id=ticket.id) }}" class="text-shida-pink hover:underline">
+                        Voir
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="px-6 py-12 text-center text-gray-400">
+                    <i data-feather="inbox" class="w-12 h-12 mx-auto mb-2"></i>
+                    <p>Aucun ticket de support</p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if tickets.pages > 1 %}
+<div class="flex justify-center gap-2 mt-6">
+    {% if tickets.has_prev %}
+    <a href="{{ url_for('admin.support', page=tickets.prev_num, status=request.args.get('status')) }}" 
+       class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600">Précédent</a>
+    {% endif %}
+    <span class="px-4 py-2 bg-shida-pink rounded-lg">{{ tickets.page }} / {{ tickets.pages }}</span>
+    {% if tickets.has_next %}
+    <a href="{{ url_for('admin.support', page=tickets.next_num, status=request.args.get('status')) }}" 
+       class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600">Suivant</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

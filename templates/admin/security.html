@@ -1,0 +1,161 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Sécurité - Shida Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold">Sécurité & Conformité</h1>
+    <p class="text-gray-400">Gestion des accès administrateur et audit</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="bg-gray-800 rounded-xl p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-semibold">Administrateurs</h3>
+            <button onclick="document.getElementById('adminModal').classList.remove('hidden')" 
+                    class="bg-shida-pink hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm">
+                + Nouvel admin
+            </button>
+        </div>
+        
+        <div class="space-y-3">
+            {% for admin in admins %}
+            <div class="bg-gray-700 rounded-lg p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-shida-pink to-purple-600 flex items-center justify-center">
+                        {{ admin.name[0] }}
+                    </div>
+                    <div>
+                        <p class="font-medium">{{ admin.name }}</p>
+                        <p class="text-sm text-gray-400">{{ admin.email }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="px-2 py-1 rounded text-xs 
+                        {% if admin.role == 'super_admin' %}bg-red-500/20 text-red-400
+                        {% elif admin.role == 'moderator' %}bg-blue-500/20 text-blue-400
+                        {% else %}bg-gray-500/20 text-gray-400{% endif %}">
+                        {{ admin.role }}
+                    </span>
+                    {% if admin.id != session.admin_id %}
+                    <form method="POST" action="{{ url_for('admin.manage_admin') }}">
+                        <input type="hidden" name="action" value="toggle">
+                        <input type="hidden" name="admin_id" value="{{ admin.id }}">
+                        <button type="submit" class="text-sm {% if admin.is_active %}text-red-400 hover:text-red-300{% else %}text-green-400 hover:text-green-300{% endif %}">
+                            {{ 'Désactiver' if admin.is_active else 'Activer' }}
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="bg-gray-800 rounded-xl p-6">
+        <h3 class="text-lg font-semibold mb-6">Rôles et permissions</h3>
+        
+        <div class="space-y-4">
+            <div class="bg-gray-700 rounded-lg p-4">
+                <h4 class="font-medium text-red-400 flex items-center gap-2">
+                    <i data-feather="shield" class="w-4 h-4"></i> Super Admin
+                </h4>
+                <p class="text-sm text-gray-400 mt-1">Accès complet à toutes les fonctionnalités. Peut gérer les autres administrateurs.</p>
+            </div>
+            
+            <div class="bg-gray-700 rounded-lg p-4">
+                <h4 class="font-medium text-blue-400 flex items-center gap-2">
+                    <i data-feather="eye" class="w-4 h-4"></i> Modérateur
+                </h4>
+                <p class="text-sm text-gray-400 mt-1">Peut modérer le contenu et gérer les signalements. Accès limité aux données sensibles.</p>
+            </div>
+            
+            <div class="bg-gray-700 rounded-lg p-4">
+                <h4 class="font-medium text-green-400 flex items-center gap-2">
+                    <i data-feather="headphones" class="w-4 h-4"></i> Support
+                </h4>
+                <p class="text-sm text-gray-400 mt-1">Peut gérer les tickets de support et communiquer avec les utilisateurs.</p>
+            </div>
+            
+            <div class="bg-gray-700 rounded-lg p-4">
+                <h4 class="font-medium text-yellow-400 flex items-center gap-2">
+                    <i data-feather="bar-chart" class="w-4 h-4"></i> Analyste
+                </h4>
+                <p class="text-sm text-gray-400 mt-1">Accès aux analytics et rapports. Lecture seule sur les autres modules.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-gray-800 rounded-xl p-6">
+    <h3 class="text-lg font-semibold mb-6">Journal d'audit</h3>
+    
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-700">
+                <tr>
+                    <th class="text-left px-4 py-3">Date</th>
+                    <th class="text-left px-4 py-3">Admin</th>
+                    <th class="text-left px-4 py-3">Action</th>
+                    <th class="text-left px-4 py-3">Cible</th>
+                    <th class="text-left px-4 py-3">Détails</th>
+                    <th class="text-left px-4 py-3">IP</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr class="border-t border-gray-700">
+                    <td class="px-4 py-3 text-sm text-gray-400">{{ log.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td class="px-4 py-3">{{ log.admin.name if log.admin else 'N/A' }}</td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-1 rounded text-xs bg-gray-600">{{ log.action }}</span>
+                    </td>
+                    <td class="px-4 py-3 text-gray-400">
+                        {% if log.target_type %}{{ log.target_type }} #{{ log.target_id }}{% else %}-{% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-400">{{ log.details[:50] if log.details else '-' }}{% if log.details and log.details|length > 50 %}...{% endif %}</td>
+                    <td class="px-4 py-3 text-sm text-gray-500 font-mono">{{ log.ip_address or '-' }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="px-4 py-12 text-center text-gray-400">
+                        Aucune activité enregistrée
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="adminModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4">
+        <h3 class="text-xl font-bold mb-4">Nouvel administrateur</h3>
+        <form method="POST" action="{{ url_for('admin.manage_admin') }}" class="space-y-4">
+            <input type="hidden" name="action" value="create">
+            
+            <input type="text" name="name" placeholder="Nom complet" required
+                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+            
+            <input type="email" name="email" placeholder="Email" required
+                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+            
+            <input type="password" name="password" placeholder="Mot de passe" required minlength="8"
+                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+            
+            <select name="role" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+                <option value="moderator">Modérateur</option>
+                <option value="support">Support</option>
+                <option value="analyst">Analyste</option>
+                <option value="super_admin">Super Admin</option>
+            </select>
+            
+            <div class="flex gap-3">
+                <button type="button" onclick="document.getElementById('adminModal').classList.add('hidden')"
+                        class="flex-1 bg-gray-600 hover:bg-gray-500 text-white py-2 rounded-lg">Annuler</button>
+                <button type="submit" class="flex-1 bg-shida-pink hover:bg-pink-600 text-white py-2 rounded-lg">Créer</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

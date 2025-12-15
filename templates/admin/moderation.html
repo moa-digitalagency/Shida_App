@@ -1,0 +1,126 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Modération - Shida Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold">Modération</h1>
+    <p class="text-gray-400">Gestion des signalements et contenu</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-yellow-400">{{ stats.pending }}</p>
+        <p class="text-gray-400 text-sm">En attente</p>
+    </div>
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-blue-400">{{ stats.in_progress }}</p>
+        <p class="text-gray-400 text-sm">En cours</p>
+    </div>
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-green-400">{{ stats.resolved }}</p>
+        <p class="text-gray-400 text-sm">Résolus</p>
+    </div>
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-red-400">{{ stats.high_priority }}</p>
+        <p class="text-gray-400 text-sm">Priorité haute</p>
+    </div>
+</div>
+
+<div class="bg-gray-800 rounded-xl p-4 mb-6">
+    <form method="GET" class="flex gap-4">
+        <select name="status" class="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+            <option value="pending" {% if request.args.get('status', 'pending') == 'pending' %}selected{% endif %}>En attente</option>
+            <option value="in_progress" {% if request.args.get('status') == 'in_progress' %}selected{% endif %}>En cours</option>
+            <option value="resolved" {% if request.args.get('status') == 'resolved' %}selected{% endif %}>Résolus</option>
+            <option value="all" {% if request.args.get('status') == 'all' %}selected{% endif %}>Tous</option>
+        </select>
+        
+        <select name="priority" class="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+            <option value="all" {% if request.args.get('priority', 'all') == 'all' %}selected{% endif %}>Toutes priorités</option>
+            <option value="high" {% if request.args.get('priority') == 'high' %}selected{% endif %}>Haute</option>
+            <option value="medium" {% if request.args.get('priority') == 'medium' %}selected{% endif %}>Moyenne</option>
+            <option value="low" {% if request.args.get('priority') == 'low' %}selected{% endif %}>Basse</option>
+        </select>
+        
+        <button type="submit" class="bg-shida-pink hover:bg-pink-600 text-white px-6 py-2 rounded-lg">
+            Filtrer
+        </button>
+    </form>
+</div>
+
+<div class="bg-gray-800 rounded-xl overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-700">
+            <tr>
+                <th class="text-left px-6 py-4">Type</th>
+                <th class="text-left px-6 py-4">Signalé</th>
+                <th class="text-left px-6 py-4">Par</th>
+                <th class="text-left px-6 py-4">Raison</th>
+                <th class="text-left px-6 py-4">Priorité</th>
+                <th class="text-left px-6 py-4">Statut</th>
+                <th class="text-left px-6 py-4">Date</th>
+                <th class="text-left px-6 py-4">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports.items %}
+            <tr class="border-t border-gray-700 hover:bg-gray-700/50">
+                <td class="px-6 py-4">
+                    <span class="px-2 py-1 bg-gray-600 rounded text-sm">{{ report.report_type }}</span>
+                </td>
+                <td class="px-6 py-4">
+                    {% if report.reported_user and report.reported_user.profile %}
+                    {{ report.reported_user.profile.name }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4 text-gray-400">
+                    {{ report.reporter.profile.name if report.reporter.profile else report.reporter.email }}
+                </td>
+                <td class="px-6 py-4 text-gray-400">
+                    <span class="truncate block max-w-xs">{{ report.reason[:50] }}...</span>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="px-2 py-1 rounded text-xs {% if report.priority == 'high' %}bg-red-500/20 text-red-400{% elif report.priority == 'medium' %}bg-yellow-500/20 text-yellow-400{% else %}bg-gray-500/20 text-gray-400{% endif %}">
+                        {{ report.priority }}
+                    </span>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="px-2 py-1 rounded text-xs {% if report.status == 'resolved' %}bg-green-500/20 text-green-400{% elif report.status == 'in_progress' %}bg-blue-500/20 text-blue-400{% else %}bg-yellow-500/20 text-yellow-400{% endif %}">
+                        {{ report.status }}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-gray-400">{{ report.created_at.strftime('%d/%m/%Y') }}</td>
+                <td class="px-6 py-4">
+                    <a href="{{ url_for('admin.report_detail', report_id=report.id) }}" class="text-shida-pink hover:underline">
+                        Traiter
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="px-6 py-12 text-center text-gray-400">
+                    Aucun signalement trouvé
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if reports.pages > 1 %}
+<div class="flex justify-center gap-2 mt-6">
+    {% if reports.has_prev %}
+    <a href="{{ url_for('admin.moderation', page=reports.prev_num, status=request.args.get('status'), priority=request.args.get('priority')) }}" 
+       class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600">Précédent</a>
+    {% endif %}
+    <span class="px-4 py-2 bg-shida-pink rounded-lg">{{ reports.page }} / {{ reports.pages }}</span>
+    {% if reports.has_next %}
+    <a href="{{ url_for('admin.moderation', page=reports.next_num, status=request.args.get('status'), priority=request.args.get('priority')) }}" 
+       class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600">Suivant</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,200 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Dashboard - Shida Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold">Tableau de bord</h1>
+    <p class="text-gray-400">Vue d'ensemble de l'application</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-gray-800 rounded-xl p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-400 text-sm">Utilisateurs</p>
+                <p class="text-3xl font-bold">{{ stats.total_users }}</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">
+                <i data-feather="users" class="w-6 h-6 text-blue-500"></i>
+            </div>
+        </div>
+        <p class="text-green-400 text-sm mt-2">+{{ stats.new_users_today }} aujourd'hui</p>
+    </div>
+    
+    <div class="bg-gray-800 rounded-xl p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-400 text-sm">Matches</p>
+                <p class="text-3xl font-bold">{{ stats.total_matches }}</p>
+            </div>
+            <div class="w-12 h-12 bg-pink-500/20 rounded-full flex items-center justify-center">
+                <i data-feather="heart" class="w-6 h-6 text-pink-500"></i>
+            </div>
+        </div>
+        <p class="text-green-400 text-sm mt-2">+{{ stats.matches_today }} aujourd'hui</p>
+    </div>
+    
+    <div class="bg-gray-800 rounded-xl p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-400 text-sm">VIP Actifs</p>
+                <p class="text-3xl font-bold">{{ stats.vip_users }}</p>
+            </div>
+            <div class="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center">
+                <i data-feather="star" class="w-6 h-6 text-yellow-500"></i>
+            </div>
+        </div>
+        <p class="text-gray-400 text-sm mt-2">{{ ((stats.vip_users / stats.total_users) * 100)|round(1) if stats.total_users > 0 else 0 }}% du total</p>
+    </div>
+    
+    <div class="bg-gray-800 rounded-xl p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-400 text-sm">Revenus (30j)</p>
+                <p class="text-3xl font-bold">${{ stats.revenue_month|round(2) }}</p>
+            </div>
+            <div class="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
+                <i data-feather="dollar-sign" class="w-6 h-6 text-green-500"></i>
+            </div>
+        </div>
+        <p class="text-gray-400 text-sm mt-2">{{ stats.tokens_sold or 0 }} tokens vendus</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="bg-gray-800 rounded-xl p-6">
+        <h3 class="text-lg font-semibold mb-4">Inscriptions (7 derniers jours)</h3>
+        <canvas id="signupsChart" height="200"></canvas>
+    </div>
+    
+    <div class="bg-gray-800 rounded-xl p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold">Alertes</h3>
+        </div>
+        <div class="space-y-3">
+            {% if stats.pending_reports > 0 %}
+            <a href="{{ url_for('admin.moderation') }}" class="flex items-center justify-between bg-red-500/10 border border-red-500/30 rounded-lg p-4 hover:bg-red-500/20 transition">
+                <div class="flex items-center gap-3">
+                    <i data-feather="alert-triangle" class="w-5 h-5 text-red-500"></i>
+                    <span>Signalements en attente</span>
+                </div>
+                <span class="bg-red-500 text-white px-2 py-1 rounded-full text-sm">{{ stats.pending_reports }}</span>
+            </a>
+            {% endif %}
+            
+            {% if stats.open_tickets > 0 %}
+            <a href="{{ url_for('admin.support') }}" class="flex items-center justify-between bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 hover:bg-yellow-500/20 transition">
+                <div class="flex items-center gap-3">
+                    <i data-feather="message-circle" class="w-5 h-5 text-yellow-500"></i>
+                    <span>Tickets ouverts</span>
+                </div>
+                <span class="bg-yellow-500 text-black px-2 py-1 rounded-full text-sm">{{ stats.open_tickets }}</span>
+            </a>
+            {% endif %}
+            
+            {% if stats.pending_reports == 0 and stats.open_tickets == 0 %}
+            <div class="text-center py-8 text-gray-400">
+                <i data-feather="check-circle" class="w-12 h-12 mx-auto mb-2 text-green-500"></i>
+                <p>Aucune alerte en attente</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-gray-800 rounded-xl p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold">Derniers utilisateurs</h3>
+            <a href="{{ url_for('admin.users') }}" class="text-shida-pink hover:underline text-sm">Voir tout</a>
+        </div>
+        <div class="space-y-3">
+            {% for user in recent_users %}
+            <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-700 transition">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-shida-pink to-purple-600 flex items-center justify-center">
+                    {% if user.profile and user.profile.photo_url %}
+                    <img src="{{ user.profile.photo_url }}" class="w-full h-full rounded-full object-cover">
+                    {% else %}
+                    {{ user.profile.name[0] if user.profile else 'U' }}
+                    {% endif %}
+                </div>
+                <div class="flex-1">
+                    <p class="font-medium">{{ user.profile.name if user.profile else user.email }}</p>
+                    <p class="text-sm text-gray-400">{{ user.email }}</p>
+                </div>
+                <div class="text-right">
+                    {% if user.is_vip %}
+                    <span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs">VIP</span>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="bg-gray-800 rounded-xl p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold">Signalements récents</h3>
+            <a href="{{ url_for('admin.moderation') }}" class="text-shida-pink hover:underline text-sm">Voir tout</a>
+        </div>
+        <div class="space-y-3">
+            {% for report in recent_reports %}
+            <a href="{{ url_for('admin.report_detail', report_id=report.id) }}" class="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-700 transition">
+                <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                    <i data-feather="flag" class="w-5 h-5 text-red-500"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="font-medium">{{ report.report_type }}</p>
+                    <p class="text-sm text-gray-400 truncate">{{ report.reason[:50] }}...</p>
+                </div>
+                <span class="px-2 py-1 rounded text-xs {% if report.priority == 'high' %}bg-red-500/20 text-red-400{% else %}bg-yellow-500/20 text-yellow-400{% endif %}">
+                    {{ report.priority }}
+                </span>
+            </a>
+            {% else %}
+            <div class="text-center py-8 text-gray-400">
+                <p>Aucun signalement en attente</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const ctx = document.getElementById('signupsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ daily_signups|map(attribute='date')|list|tojson }},
+            datasets: [{
+                label: 'Inscriptions',
+                data: {{ daily_signups|map(attribute='count')|list|tojson }},
+                backgroundColor: 'rgba(255, 20, 147, 0.5)',
+                borderColor: 'rgb(255, 20, 147)',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255,255,255,0.1)' },
+                    ticks: { color: '#9ca3af' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#9ca3af' }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

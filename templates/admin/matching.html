@@ -1,0 +1,128 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Algorithme de Matching - Shida Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold">Algorithme de Matching</h1>
+    <p class="text-gray-400">Configuration des paramètres de compatibilité</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-pink-400">{{ stats.total_matches }}</p>
+        <p class="text-gray-400 text-sm">Total matches</p>
+    </div>
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-green-400">{{ stats.matches_today }}</p>
+        <p class="text-gray-400 text-sm">Aujourd'hui</p>
+    </div>
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-blue-400">{{ "%.1f"|format(stats.avg_compatibility) }}%</p>
+        <p class="text-gray-400 text-sm">Compatibilité moyenne</p>
+    </div>
+    <div class="bg-gray-800 rounded-xl p-4 text-center">
+        <p class="text-3xl font-bold text-yellow-400">{{ stats.match_to_message_rate }}%</p>
+        <p class="text-gray-400 text-sm">Taux conversion → message</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-gray-800 rounded-xl p-6">
+        <h3 class="text-lg font-semibold mb-6">Pondération des critères</h3>
+        
+        <form method="POST" action="{{ url_for('admin.update_matching') }}" class="space-y-6">
+            <div>
+                <div class="flex justify-between mb-2">
+                    <label class="text-gray-300">Religion</label>
+                    <span id="religion_value">{{ (config.religion_weight * 100)|int }}%</span>
+                </div>
+                <input type="range" name="religion_weight" min="0" max="1" step="0.05" value="{{ config.religion_weight }}"
+                       class="w-full accent-shida-pink" oninput="document.getElementById('religion_value').textContent = Math.round(this.value * 100) + '%'">
+            </div>
+            
+            <div>
+                <div class="flex justify-between mb-2">
+                    <label class="text-gray-300">Localisation</label>
+                    <span id="location_value">{{ (config.location_weight * 100)|int }}%</span>
+                </div>
+                <input type="range" name="location_weight" min="0" max="1" step="0.05" value="{{ config.location_weight }}"
+                       class="w-full accent-shida-pink" oninput="document.getElementById('location_value').textContent = Math.round(this.value * 100) + '%'">
+            </div>
+            
+            <div>
+                <div class="flex justify-between mb-2">
+                    <label class="text-gray-300">Objectifs</label>
+                    <span id="objective_value">{{ (config.objective_weight * 100)|int }}%</span>
+                </div>
+                <input type="range" name="objective_weight" min="0" max="1" step="0.05" value="{{ config.objective_weight }}"
+                       class="w-full accent-shida-pink" oninput="document.getElementById('objective_value').textContent = Math.round(this.value * 100) + '%'">
+            </div>
+            
+            <div>
+                <div class="flex justify-between mb-2">
+                    <label class="text-gray-300">Profession</label>
+                    <span id="profession_value">{{ (config.profession_weight * 100)|int }}%</span>
+                </div>
+                <input type="range" name="profession_weight" min="0" max="1" step="0.05" value="{{ config.profession_weight }}"
+                       class="w-full accent-shida-pink" oninput="document.getElementById('profession_value').textContent = Math.round(this.value * 100) + '%'">
+            </div>
+            
+            <div>
+                <div class="flex justify-between mb-2">
+                    <label class="text-gray-300">Age</label>
+                    <span id="age_value">{{ (config.age_weight * 100)|int }}%</span>
+                </div>
+                <input type="range" name="age_weight" min="0" max="1" step="0.05" value="{{ config.age_weight }}"
+                       class="w-full accent-shida-pink" oninput="document.getElementById('age_value').textContent = Math.round(this.value * 100) + '%'">
+            </div>
+            
+            <div>
+                <div class="flex justify-between mb-2">
+                    <label class="text-gray-300">Centres d'intérêt</label>
+                    <span id="interests_value">{{ (config.interests_weight * 100)|int }}%</span>
+                </div>
+                <input type="range" name="interests_weight" min="0" max="1" step="0.05" value="{{ config.interests_weight }}"
+                       class="w-full accent-shida-pink" oninput="document.getElementById('interests_value').textContent = Math.round(this.value * 100) + '%'">
+            </div>
+            
+            <button type="submit" class="w-full bg-shida-pink hover:bg-pink-600 text-white py-3 rounded-lg transition">
+                Sauvegarder les paramètres
+            </button>
+        </form>
+    </div>
+    
+    <div class="bg-gray-800 rounded-xl p-6">
+        <h3 class="text-lg font-semibold mb-6">Aperçu de l'algorithme</h3>
+        
+        <div class="space-y-4">
+            <div class="bg-gray-700 rounded-lg p-4">
+                <h4 class="font-medium mb-2">Comment fonctionne le matching?</h4>
+                <p class="text-gray-400 text-sm">L'algorithme calcule un score de compatibilité basé sur les critères pondérés. Quand deux utilisateurs montrent un intérêt mutuel (swipe right), un match est créé.</p>
+            </div>
+            
+            <div class="bg-gray-700 rounded-lg p-4">
+                <h4 class="font-medium mb-2">Score de compatibilité</h4>
+                <p class="text-gray-400 text-sm">Le score est calculé comme la somme pondérée des correspondances sur chaque critère. Un score de 100% indique une compatibilité parfaite selon les paramètres actuels.</p>
+            </div>
+            
+            <div class="bg-gray-700 rounded-lg p-4">
+                <h4 class="font-medium mb-2">Recommandations</h4>
+                <ul class="text-gray-400 text-sm space-y-1">
+                    <li>• Priorisez les objectifs pour des matches plus pertinents</li>
+                    <li>• La religion est importante pour cette communauté</li>
+                    <li>• Ajustez selon les retours utilisateurs</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="mt-6 p-4 bg-shida-pink/10 border border-shida-pink/30 rounded-lg">
+            <h4 class="font-medium text-shida-pink mb-2">Total pondération</h4>
+            <p class="text-2xl font-bold" id="total_weight">
+                {{ ((config.religion_weight + config.location_weight + config.objective_weight + config.profession_weight + config.age_weight + config.interests_weight) * 100)|int }}%
+            </p>
+            <p class="text-gray-400 text-sm">Recommandé: 100%</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

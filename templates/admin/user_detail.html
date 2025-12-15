@@ -1,0 +1,208 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}{{ user.profile.name if user.profile else user.email }} - Shida Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <a href="{{ url_for('admin.users') }}" class="text-gray-400 hover:text-white flex items-center gap-2 mb-4">
+        <i data-feather="arrow-left" class="w-4 h-4"></i> Retour aux utilisateurs
+    </a>
+    <h1 class="text-3xl font-bold">Détails de l'utilisateur</h1>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-1">
+        <div class="bg-gray-800 rounded-xl p-6 mb-6">
+            <div class="text-center mb-6">
+                <div class="w-24 h-24 rounded-full bg-gradient-to-br from-shida-pink to-purple-600 mx-auto mb-4 overflow-hidden">
+                    {% if user.profile and user.profile.photo_url %}
+                    <img src="{{ user.profile.photo_url }}" class="w-full h-full object-cover">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center text-3xl">
+                        {{ user.profile.name[0] if user.profile else 'U' }}
+                    </div>
+                    {% endif %}
+                </div>
+                <h2 class="text-xl font-bold">{{ user.profile.name if user.profile else 'Sans profil' }}</h2>
+                <p class="text-gray-400">{{ user.email }}</p>
+                
+                <div class="flex justify-center gap-2 mt-4">
+                    {% if user.is_vip %}
+                    <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm">VIP {{ user.vip_type }}</span>
+                    {% endif %}
+                    {% if user.profile and user.profile.is_verified %}
+                    <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm">Vérifié</span>
+                    {% endif %}
+                    {% if user.is_banned %}
+                    <span class="bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-sm">Banni</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                    <span class="text-gray-400">ID</span>
+                    <span>#{{ user.id }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Tokens</span>
+                    <span>{{ user.tokens }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Inscrit le</span>
+                    <span>{{ user.created_at.strftime('%d/%m/%Y') if user.created_at else '-' }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Dernière connexion</span>
+                    <span>{{ user.last_login.strftime('%d/%m/%Y %H:%M') if user.last_login else 'Jamais' }}</span>
+                </div>
+                {% if user.profile %}
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Age</span>
+                    <span>{{ user.profile.age }} ans</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Religion</span>
+                    <span>{{ user.profile.religion or '-' }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Profession</span>
+                    <span>{{ user.profile.profession or '-' }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Objectif</span>
+                    <span>{{ user.profile.objective or '-' }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 rounded-xl p-6">
+            <h3 class="font-semibold mb-4">Actions rapides</h3>
+            <div class="space-y-3">
+                {% if not user.is_banned %}
+                <form method="POST" action="{{ url_for('admin.user_action', user_id=user.id) }}">
+                    <input type="hidden" name="action" value="ban">
+                    <input type="text" name="reason" placeholder="Raison du bannissement" 
+                           class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white mb-2">
+                    <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition">
+                        Bannir l'utilisateur
+                    </button>
+                </form>
+                {% else %}
+                <form method="POST" action="{{ url_for('admin.user_action', user_id=user.id) }}">
+                    <input type="hidden" name="action" value="unban">
+                    <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg transition">
+                        Lever le bannissement
+                    </button>
+                </form>
+                {% endif %}
+                
+                {% if user.profile and not user.profile.is_verified %}
+                <form method="POST" action="{{ url_for('admin.user_action', user_id=user.id) }}">
+                    <input type="hidden" name="action" value="verify">
+                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition">
+                        Vérifier le profil
+                    </button>
+                </form>
+                {% endif %}
+                
+                <form method="POST" action="{{ url_for('admin.user_action', user_id=user.id) }}" class="flex gap-2">
+                    <input type="hidden" name="action" value="add_tokens">
+                    <input type="number" name="amount" placeholder="Tokens" min="1" 
+                           class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+                    <button type="submit" class="bg-shida-gold hover:bg-yellow-600 text-black px-4 py-2 rounded-lg transition">
+                        Ajouter
+                    </button>
+                </form>
+                
+                <form method="POST" action="{{ url_for('admin.user_action', user_id=user.id) }}" class="flex gap-2">
+                    <input type="hidden" name="action" value="set_vip">
+                    <select name="vip_type" class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+                        <option value="Silver">Silver</option>
+                        <option value="Gold">Gold</option>
+                        <option value="Platinum">Platinum</option>
+                    </select>
+                    <input type="number" name="days" placeholder="Jours" min="1" value="30"
+                           class="w-20 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+                    <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-lg transition">
+                        VIP
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="lg:col-span-2 space-y-6">
+        <div class="bg-gray-800 rounded-xl p-6">
+            <h3 class="font-semibold mb-4">Matches ({{ matches|length }})</h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {% for match in matches[:6] %}
+                {% set other = match.user2 if match.user1_id == user.id else match.user1 %}
+                <div class="bg-gray-700 rounded-lg p-3 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-shida-pink flex items-center justify-center overflow-hidden">
+                        {% if other.profile and other.profile.photo_url %}
+                        <img src="{{ other.profile.photo_url }}" class="w-full h-full object-cover">
+                        {% else %}
+                        {{ other.profile.name[0] if other.profile else '?' }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <p class="font-medium text-sm">{{ other.profile.name if other.profile else other.email }}</p>
+                        <p class="text-xs text-gray-400">{{ match.created_at.strftime('%d/%m/%Y') }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-gray-400 col-span-full">Aucun match</p>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 rounded-xl p-6">
+            <h3 class="font-semibold mb-4">Signalements reçus ({{ reports_received|length }})</h3>
+            <div class="space-y-3">
+                {% for report in reports_received[:5] %}
+                <div class="bg-gray-700 rounded-lg p-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-sm px-2 py-1 rounded {% if report.status == 'resolved' %}bg-green-500/20 text-green-400{% else %}bg-yellow-500/20 text-yellow-400{% endif %}">
+                                {{ report.status }}
+                            </span>
+                            <p class="mt-2 font-medium">{{ report.report_type }}</p>
+                            <p class="text-sm text-gray-400">{{ report.reason[:100] }}...</p>
+                        </div>
+                        <a href="{{ url_for('admin.report_detail', report_id=report.id) }}" class="text-shida-pink text-sm hover:underline">
+                            Voir
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-gray-400">Aucun signalement reçu</p>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 rounded-xl p-6">
+            <h3 class="font-semibold mb-4">Transactions de tokens</h3>
+            <div class="space-y-2">
+                {% for tx in transactions[:10] %}
+                <div class="flex justify-between items-center py-2 border-b border-gray-700">
+                    <div>
+                        <p class="font-medium">{{ tx.transaction_type }}</p>
+                        <p class="text-sm text-gray-400">{{ tx.description or '-' }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="{% if tx.amount > 0 %}text-green-400{% else %}text-red-400{% endif %}">
+                            {{ '+' if tx.amount > 0 else '' }}{{ tx.amount }} tokens
+                        </p>
+                        <p class="text-xs text-gray-400">{{ tx.created_at.strftime('%d/%m/%Y') }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-gray-400">Aucune transaction</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

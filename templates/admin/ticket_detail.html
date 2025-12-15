@@ -1,0 +1,169 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Ticket #{{ ticket.id }} - Shida Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <a href="{{ url_for('admin.support') }}" class="text-gray-400 hover:text-white flex items-center gap-2 mb-4">
+        <i data-feather="arrow-left" class="w-4 h-4"></i> Retour au support
+    </a>
+    <div class="flex justify-between items-start">
+        <div>
+            <h1 class="text-3xl font-bold">Ticket #{{ ticket.id }}</h1>
+            <p class="text-gray-400">{{ ticket.subject }}</p>
+        </div>
+        <div class="flex gap-2">
+            <span class="px-3 py-1 rounded-full text-sm {% if ticket.status == 'resolved' %}bg-green-500/20 text-green-400{% elif ticket.status == 'in_progress' %}bg-blue-500/20 text-blue-400{% else %}bg-yellow-500/20 text-yellow-400{% endif %}">
+                {{ ticket.status }}
+            </span>
+            <span class="px-3 py-1 rounded-full text-sm {% if ticket.priority == 'high' %}bg-red-500/20 text-red-400{% else %}bg-gray-500/20 text-gray-400{% endif %}">
+                {{ ticket.priority }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 space-y-6">
+        <div class="bg-gray-800 rounded-xl p-6">
+            <div class="flex items-start gap-4 mb-4">
+                <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
+                    {{ ticket.user.profile.name[0] if ticket.user.profile else 'U' }}
+                </div>
+                <div class="flex-1">
+                    <div class="flex justify-between">
+                        <p class="font-medium">{{ ticket.user.profile.name if ticket.user.profile else ticket.user.email }}</p>
+                        <span class="text-sm text-gray-400">{{ ticket.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Catégorie: {{ ticket.category }}</p>
+                </div>
+            </div>
+            <div class="bg-gray-700 rounded-lg p-4">
+                <p class="text-gray-300">{{ ticket.message }}</p>
+            </div>
+        </div>
+        
+        {% for response in responses %}
+        <div class="bg-gray-800 rounded-xl p-6 {% if response.is_internal %}border border-yellow-500/30{% endif %}">
+            <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full {% if response.admin %}bg-shida-pink{% else %}bg-blue-500{% endif %} flex items-center justify-center">
+                    {% if response.admin %}
+                    {{ response.admin.name[0] }}
+                    {% else %}
+                    {{ response.user.profile.name[0] if response.user.profile else 'U' }}
+                    {% endif %}
+                </div>
+                <div class="flex-1">
+                    <div class="flex justify-between mb-2">
+                        <p class="font-medium">
+                            {% if response.admin %}
+                            {{ response.admin.name }} <span class="text-shida-pink text-sm">(Support)</span>
+                            {% else %}
+                            {{ response.user.profile.name if response.user.profile else response.user.email }}
+                            {% endif %}
+                            {% if response.is_internal %}
+                            <span class="text-yellow-400 text-sm">(Note interne)</span>
+                            {% endif %}
+                        </p>
+                        <span class="text-sm text-gray-400">{{ response.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                    </div>
+                    <p class="text-gray-300">{{ response.message }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        
+        {% if ticket.status != 'resolved' %}
+        <div class="bg-gray-800 rounded-xl p-6">
+            <h3 class="font-semibold mb-4">Répondre</h3>
+            <form method="POST" class="space-y-4">
+                <input type="hidden" name="action" value="respond">
+                <textarea name="message" rows="4" required placeholder="Votre réponse..."
+                          class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white"></textarea>
+                <div class="flex justify-between items-center">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" name="is_internal" class="accent-yellow-500">
+                        <span class="text-sm text-gray-400">Note interne (invisible pour l'utilisateur)</span>
+                    </label>
+                    <button type="submit" class="bg-shida-pink hover:bg-pink-600 text-white px-6 py-2 rounded-lg transition">
+                        Envoyer
+                    </button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="lg:col-span-1 space-y-6">
+        <div class="bg-gray-800 rounded-xl p-6">
+            <h3 class="font-semibold mb-4">Informations</h3>
+            <div class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Créé le</span>
+                    <span>{{ ticket.created_at.strftime('%d/%m/%Y') }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Mis à jour</span>
+                    <span>{{ ticket.updated_at.strftime('%d/%m/%Y %H:%M') if ticket.updated_at else '-' }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Assigné à</span>
+                    <span>{{ ticket.assignee.name if ticket.assignee else 'Non assigné' }}</span>
+                </div>
+                {% if ticket.resolved_at %}
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Résolu le</span>
+                    <span>{{ ticket.resolved_at.strftime('%d/%m/%Y') }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 rounded-xl p-6">
+            <h3 class="font-semibold mb-4">Actions</h3>
+            <div class="space-y-3">
+                {% if not ticket.assigned_to %}
+                <form method="POST">
+                    <input type="hidden" name="action" value="assign">
+                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition">
+                        M'assigner ce ticket
+                    </button>
+                </form>
+                {% endif %}
+                
+                <form method="POST" class="flex gap-2">
+                    <input type="hidden" name="action" value="status">
+                    <select name="status" class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+                        <option value="open" {% if ticket.status == 'open' %}selected{% endif %}>Ouvert</option>
+                        <option value="in_progress" {% if ticket.status == 'in_progress' %}selected{% endif %}>En cours</option>
+                        <option value="resolved" {% if ticket.status == 'resolved' %}selected{% endif %}>Résolu</option>
+                    </select>
+                    <button type="submit" class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-sm">
+                        Mettre à jour
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 rounded-xl p-6">
+            <h3 class="font-semibold mb-4">Utilisateur</h3>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden">
+                    {% if ticket.user.profile and ticket.user.profile.photo_url %}
+                    <img src="{{ ticket.user.profile.photo_url }}" class="w-full h-full object-cover">
+                    {% else %}
+                    {{ ticket.user.profile.name[0] if ticket.user.profile else 'U' }}
+                    {% endif %}
+                </div>
+                <div>
+                    <p class="font-medium">{{ ticket.user.profile.name if ticket.user.profile else 'Sans profil' }}</p>
+                    <p class="text-sm text-gray-400">{{ ticket.user.email }}</p>
+                </div>
+            </div>
+            <a href="{{ url_for('admin.user_detail', user_id=ticket.user_id) }}" class="block text-center text-shida-pink hover:underline text-sm">
+                Voir le profil complet
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

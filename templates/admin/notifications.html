@@ -1,0 +1,102 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Notifications - Shida Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold">Notifications</h1>
+    <p class="text-gray-400">Envoi de notifications push aux utilisateurs</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-gray-800 rounded-xl p-6">
+        <h3 class="text-lg font-semibold mb-6">Envoyer une notification</h3>
+        
+        <form method="POST" action="{{ url_for('admin.send_notification') }}" class="space-y-4">
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">Destinataires</label>
+                <select name="target" id="targetSelect" onchange="toggleUserSelect()" 
+                        class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white">
+                    <option value="all">Tous les utilisateurs actifs</option>
+                    <option value="vip">Utilisateurs VIP</option>
+                    <option value="inactive">Utilisateurs inactifs (+7 jours)</option>
+                    <option value="specific">Utilisateurs spécifiques</option>
+                </select>
+            </div>
+            
+            <div id="userSelectDiv" class="hidden">
+                <label class="block text-sm text-gray-400 mb-2">Sélectionner les utilisateurs</label>
+                <select name="user_ids" multiple size="5"
+                        class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+                    {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.profile.name if user.profile else user.email }}</option>
+                    {% endfor %}
+                </select>
+                <p class="text-xs text-gray-500 mt-1">Maintenez Ctrl/Cmd pour sélectionner plusieurs</p>
+            </div>
+            
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">Type de notification</label>
+                <select name="notification_type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white">
+                    <option value="general">Général</option>
+                    <option value="promo">Promotion</option>
+                    <option value="update">Mise à jour</option>
+                    <option value="reminder">Rappel</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">Titre</label>
+                <input type="text" name="title" required placeholder="Titre de la notification"
+                       class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white">
+            </div>
+            
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">Message</label>
+                <textarea name="message" rows="4" required placeholder="Contenu du message..."
+                          class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white"></textarea>
+            </div>
+            
+            <button type="submit" class="w-full bg-shida-pink hover:bg-pink-600 text-white py-3 rounded-lg transition">
+                Envoyer la notification
+            </button>
+        </form>
+    </div>
+    
+    <div class="bg-gray-800 rounded-xl p-6">
+        <h3 class="text-lg font-semibold mb-6">Notifications envoyées</h3>
+        
+        <div class="space-y-3 max-h-[600px] overflow-y-auto">
+            {% for notif in sent_notifications %}
+            <div class="bg-gray-700 rounded-lg p-4">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="px-2 py-1 rounded text-xs 
+                        {% if notif.notification_type == 'promo' %}bg-shida-gold/20 text-shida-gold
+                        {% elif notif.notification_type == 'update' %}bg-blue-500/20 text-blue-400
+                        {% elif notif.notification_type == 'reminder' %}bg-yellow-500/20 text-yellow-400
+                        {% else %}bg-gray-500/20 text-gray-400{% endif %}">
+                        {{ notif.notification_type }}
+                    </span>
+                    <span class="text-xs text-gray-500">{{ notif.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                </div>
+                <p class="font-medium">{{ notif.title }}</p>
+                <p class="text-sm text-gray-400 mt-1">{{ notif.message[:100] }}{% if notif.message|length > 100 %}...{% endif %}</p>
+            </div>
+            {% else %}
+            <div class="text-center py-12 text-gray-400">
+                <i data-feather="bell-off" class="w-12 h-12 mx-auto mb-2"></i>
+                <p>Aucune notification envoyée</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleUserSelect() {
+    const target = document.getElementById('targetSelect').value;
+    const userDiv = document.getElementById('userSelectDiv');
+    userDiv.classList.toggle('hidden', target !== 'specific');
+}
+</script>
+{% endblock %}

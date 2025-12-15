@@ -1,0 +1,183 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Analytiques - Shida Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold">Analytiques</h1>
+    <p class="text-gray-400">Métriques détaillées de l'application</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="bg-gray-800 rounded-xl p-6">
+        <h3 class="text-lg font-semibold mb-4">Inscriptions (30 jours)</h3>
+        <canvas id="usersChart" height="200"></canvas>
+    </div>
+    
+    <div class="bg-gray-800 rounded-xl p-6">
+        <h3 class="text-lg font-semibold mb-4">Matches (30 jours)</h3>
+        <canvas id="matchesChart" height="200"></canvas>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    <div class="bg-gray-800 rounded-xl p-6">
+        <h3 class="text-lg font-semibold mb-4">Distribution par âge</h3>
+        <canvas id="ageChart" height="200"></canvas>
+    </div>
+    
+    <div class="bg-gray-800 rounded-xl p-6">
+        <h3 class="text-lg font-semibold mb-4">Objectifs relationnels</h3>
+        <canvas id="objectiveChart" height="200"></canvas>
+    </div>
+    
+    <div class="bg-gray-800 rounded-xl p-6">
+        <h3 class="text-lg font-semibold mb-4">Messages (30 jours)</h3>
+        <canvas id="messagesChart" height="200"></canvas>
+    </div>
+</div>
+
+<div class="bg-gray-800 rounded-xl p-6">
+    <h3 class="text-lg font-semibold mb-6">Funnel de conversion (30 jours)</h3>
+    
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="text-center p-4 bg-gray-700 rounded-lg">
+            <p class="text-3xl font-bold text-blue-400">{{ funnel.signups }}</p>
+            <p class="text-gray-400 text-sm">Inscriptions</p>
+        </div>
+        <div class="text-center p-4 bg-gray-700 rounded-lg relative">
+            <div class="absolute left-0 top-1/2 -translate-x-1/2 text-gray-500">→</div>
+            <p class="text-3xl font-bold text-green-400">{{ funnel.profiles_complete }}</p>
+            <p class="text-gray-400 text-sm">Profils complets</p>
+            <p class="text-xs text-gray-500">{{ ((funnel.profiles_complete / funnel.signups) * 100)|round(1) if funnel.signups > 0 else 0 }}%</p>
+        </div>
+        <div class="text-center p-4 bg-gray-700 rounded-lg">
+            <p class="text-3xl font-bold text-yellow-400">{{ funnel.first_swipe }}</p>
+            <p class="text-gray-400 text-sm">Premier swipe</p>
+            <p class="text-xs text-gray-500">{{ ((funnel.first_swipe / funnel.signups) * 100)|round(1) if funnel.signups > 0 else 0 }}%</p>
+        </div>
+        <div class="text-center p-4 bg-gray-700 rounded-lg">
+            <p class="text-3xl font-bold text-pink-400">{{ funnel.first_match }}</p>
+            <p class="text-gray-400 text-sm">Premier match</p>
+            <p class="text-xs text-gray-500">{{ ((funnel.first_match / funnel.signups) * 100)|round(1) if funnel.signups > 0 else 0 }}%</p>
+        </div>
+        <div class="text-center p-4 bg-gray-700 rounded-lg">
+            <p class="text-3xl font-bold text-purple-400">{{ funnel.first_message }}</p>
+            <p class="text-gray-400 text-sm">Premier message</p>
+            <p class="text-xs text-gray-500">{{ ((funnel.first_message / funnel.signups) * 100)|round(1) if funnel.signups > 0 else 0 }}%</p>
+        </div>
+        <div class="text-center p-4 bg-gray-700 rounded-lg">
+            <p class="text-3xl font-bold text-shida-gold">{{ funnel.vip_conversion }}</p>
+            <p class="text-gray-400 text-sm">Conversion VIP</p>
+            <p class="text-xs text-gray-500">{{ ((funnel.vip_conversion / funnel.signups) * 100)|round(1) if funnel.signups > 0 else 0 }}%</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const usersCtx = document.getElementById('usersChart').getContext('2d');
+    new Chart(usersCtx, {
+        type: 'line',
+        data: {
+            labels: {{ daily_users|map(attribute='date')|list|tojson }},
+            datasets: [{
+                label: 'Inscriptions',
+                data: {{ daily_users|map(attribute='count')|list|tojson }},
+                borderColor: 'rgb(59, 130, 246)',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#9ca3af' } },
+                x: { grid: { display: false }, ticks: { color: '#9ca3af', maxTicksLimit: 10 } }
+            }
+        }
+    });
+
+    const matchesCtx = document.getElementById('matchesChart').getContext('2d');
+    new Chart(matchesCtx, {
+        type: 'line',
+        data: {
+            labels: {{ daily_matches|map(attribute='date')|list|tojson }},
+            datasets: [{
+                label: 'Matches',
+                data: {{ daily_matches|map(attribute='count')|list|tojson }},
+                borderColor: 'rgb(255, 20, 147)',
+                backgroundColor: 'rgba(255, 20, 147, 0.1)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#9ca3af' } },
+                x: { grid: { display: false }, ticks: { color: '#9ca3af', maxTicksLimit: 10 } }
+            }
+        }
+    });
+
+    const ageCtx = document.getElementById('ageChart').getContext('2d');
+    new Chart(ageCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ age_distribution|map('first')|list|map('int')|list|tojson }}.map(v => v + '-' + (v+9) + ' ans'),
+            datasets: [{
+                data: {{ age_distribution|map('last')|list|tojson }},
+                backgroundColor: ['#ff1493', '#ff69b4', '#da70d6', '#ba55d3', '#9932cc']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af' } } }
+        }
+    });
+
+    const objectiveCtx = document.getElementById('objectiveChart').getContext('2d');
+    new Chart(objectiveCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ objective_distribution|map('first')|list|tojson }},
+            datasets: [{
+                data: {{ objective_distribution|map('last')|list|tojson }},
+                backgroundColor: ['#ffd700', '#ffa500', '#ff6347', '#ff4500', '#dc143c']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af' } } }
+        }
+    });
+
+    const messagesCtx = document.getElementById('messagesChart').getContext('2d');
+    new Chart(messagesCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ daily_messages|map(attribute='date')|list|tojson }},
+            datasets: [{
+                label: 'Messages',
+                data: {{ daily_messages|map(attribute='count')|list|tojson }},
+                backgroundColor: 'rgba(34, 197, 94, 0.5)',
+                borderColor: 'rgb(34, 197, 94)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#9ca3af' } },
+                x: { grid: { display: false }, ticks: { display: false } }
+            }
+        }
+    });
+</script>
+{% endblock %}

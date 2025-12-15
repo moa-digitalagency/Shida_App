@@ -1,18 +1,30 @@
+import os
+import logging
 from flask import Flask
 from flask_login import LoginManager
-from models import db, User
-import os
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__, 
     static_folder='statics',
     template_folder='templates'
 )
 
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'shida-secret-key-2024')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shida.db'
+app.secret_key = os.environ.get("SESSION_SECRET")
+if not app.secret_key:
+    raise RuntimeError("SESSION_SECRET environment variable is required")
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_recycle": 300,
+    "pool_pre_ping": True,
+}
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
+from models import db
 db.init_app(app)
 
 login_manager = LoginManager()
@@ -21,13 +33,16 @@ login_manager.login_view = 'views.index'
 
 @login_manager.user_loader
 def load_user(user_id):
+    from models import User
     return User.query.get(int(user_id))
 
 from routes.api import api
 from routes.views import views
+from routes.admin import admin
 
 app.register_blueprint(api)
 app.register_blueprint(views)
+app.register_blueprint(admin)
 
 @app.after_request
 def add_header(response):
@@ -37,13 +52,25 @@ def add_header(response):
     return response
 
 with app.app_context():
+    from models import User, Profile, Like, Match, Message, AdminUser, Report, Subscription, TokenTransaction, Notification, AuditLog, SupportTicket, TicketResponse, ContentPage, MatchingConfig, PricingPlan, PromoCode
     db.create_all()
     
+    from werkzeug.security import generate_password_hash
+    import json
+    
+    admin_email = os.environ.get('ADMIN_EMAIL', 'admin@shida.com')
+    admin_password = os.environ.get('ADMIN_PASSWORD')
+    if admin_password and not AdminUser.query.filter_by(email=admin_email).first():
+        admin_user = AdminUser(
+            email=admin_email,
+            password_hash=generate_password_hash(admin_password),
+            name='Super Admin',
+            role='super_admin'
+        )
+        db.session.add(admin_user)
+        db.session.commit()
+    
     if not User.query.filter_by(email='demo@shida.com').first():
-        from werkzeug.security import generate_password_hash
-        import json
-        from models import Profile, Match, Message
-        
         demo_user = User(
             email='demo@shida.com',
             password_hash=generate_password_hash('demo123'),
@@ -64,7 +91,8 @@ with app.app_context():
             profession='Entrepreneur',
             objective='Mariage',
             views_count=34,
-            weekly_views=json.dumps([8, 5, 6, 7, 10, 12, 8])
+            weekly_views=json.dumps([8, 5, 6, 7, 10, 12, 8]),
+            is_verified=True
         )
         db.session.add(demo_profile)
         
@@ -76,7 +104,7 @@ with app.app_context():
             {'name': 'Michelle', 'age': 26, 'photo': 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400', 'objective': 'Mariage'},
         ]
         
-        for i, data in enumerate(sample_users):
+        for data in sample_users:
             user = User(
                 email=f'{data["name"].lower()}@shida.com',
                 password_hash=generate_password_hash('password123'),
