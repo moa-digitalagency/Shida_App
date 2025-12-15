@@ -280,6 +280,11 @@ const Discovery = {
         const card = document.getElementById('currentCard');
         if (!card || this.currentIndex >= this.profiles.length) return;
         
+        if (!ShidaApp.currentUser) {
+            window.location.href = '/login';
+            return;
+        }
+        
         const profile = this.profiles[this.currentIndex];
         
         card.classList.add(direction === 'left' ? 'swiping-left' : 'swiping-right');

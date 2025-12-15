@@ -55,8 +55,8 @@ with app.app_context():
     import models as m
     db.create_all()
     
-    from data.seeder import seed_database
-    seed_database(db, m)
+    from data.init_db import init_database
+    init_database(db, m)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
