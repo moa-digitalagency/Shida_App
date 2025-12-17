@@ -289,10 +289,9 @@ def init_database(db, models):
         
         notif = Notification(
             user_id=demo_user.id,
-            type='welcome',
+            notification_type='welcome',
             title='Bienvenue sur Shida !',
-            message='Découvrez comment trouver votre partenaire idéal.',
-            data=json.dumps({'action': 'start_discovery'})
+            message='Découvrez comment trouver votre partenaire idéal.'
         )
         db.session.add(notif)
     
