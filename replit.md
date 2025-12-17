@@ -49,7 +49,13 @@ Shida is a mobile-first dating app featuring:
 ├── utils/             # Helper utilities
 ├── lang/              # Translations (French/English)
 ├── data/              # Static data and seeder
-└── docs/              # API documentation
+└── docs/              # Documentation complète
+    ├── API.md                   # Documentation API REST
+    ├── ARCHITECTURE_TECHNIQUE.md # Architecture et stack technique
+    ├── MODELE_COMMERCIAL.md     # Monétisation et business model
+    ├── GUIDE_UTILISATEUR.md     # Guide pour les utilisateurs finaux
+    ├── ADMINISTRATION.md        # Guide admin et modération
+    └── SECURITE.md              # Mesures de sécurité
 ```
 
 ## Running the App
